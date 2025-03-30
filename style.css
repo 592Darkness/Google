@@ -889,3 +889,53 @@ header.scrolled {
 .translate-y-full {
   transform: translateY(100%);
 }
+/* Add these styles to fix the navigation */
+
+/* Force the header to display properly */
+header {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Force desktop navigation to display on non-mobile screens */
+@media (min-width: 768px) {
+  header .hidden.md\:flex {
+    display: flex !important;
+  }
+}
+
+/* Ensure mobile navigation toggle works */
+#mobile-menu-btn {
+  display: block !important;
+}
+
+@media (min-width: 768px) {
+  #mobile-menu-btn {
+    display: none !important;
+  }
+}
+
+/* Make sure the navigation items are visible */
+header a, 
+header button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important; /* light gray color for better visibility */
+}
+
+/* Fix for any potential z-index issues */
+header {
+  z-index: 50 !important;
+}
+
+/* Ensure padding is correct */
+header .container {
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+/* Make sure the space below header is adequate */
+.h-16 {
+  height: 4rem !important;
+}
