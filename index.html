@@ -3,14 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Salaam Rides - Book safe and reliable taxis in Guyana. Available 24/7 with multiple vehicle options.">
     <title>Salaam Rides - Reliable Taxi Service in Guyana</title>
     
+    <!-- Preload critical resources -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2310b981' d='M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z'/%3E%3C/svg%3E">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script> 
     
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
     
     <script>
@@ -37,24 +49,51 @@
                 '900': '#064e3b',
                 '950': '#022c22',
               },
-            }
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'fade-in': 'fadeIn 0.8s ease-out forwards',
+              'slide-up': 'slideUp 0.5s ease-out forwards',
+              'slide-in': 'slideIn 0.4s ease-out forwards',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              slideIn: {
+                '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                '100%': { transform: 'translateX(0)', opacity: '1' },
+              },
+            },
           }
         }
       }
     </script>
 
+    <!-- Google Maps API - Async defer for better performance -->
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-6uXAa6MkIMwlYYwMIVBq5s3T0aTh0EI&libraries=places&callback=initMap">
     </script>
 
 </head>
 <body class="bg-gray-900 text-gray-200 font-sans antialiased dark">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 z-0 opacity-10 pointer-events-none overflow-hidden">
+        <img src="islamic-pattern.svg" alt="" class="w-full h-full object-cover" aria-hidden="true">
+    </div>
 
+    <!-- Header and Navigation -->
     <header class="bg-gray-900/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-700/50 shadow-md">
         <nav class="container mx-auto px-4 lg:px-6 py-3 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-primary-400 hover:text-primary-300 transition-colors">
+            <a href="#" class="text-2xl font-bold text-primary-400 hover:text-primary-300 transition-colors" aria-label="Salaam Rides Guyana Home">
                 Salaam Rides <span class="text-xs font-normal text-gray-400">Guyana</span>
             </a>
+            <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-6">
                 <a href="#features" class="text-gray-300 hover:text-primary-400 transition duration-300">Features</a>
                 <a href="#rewards" class="text-gray-300 hover:text-primary-400 transition duration-300">Rewards</a>
@@ -63,188 +102,320 @@
                     Login / Sign Up
                 </button>
             </div>
+            <!-- Mobile Menu Button -->
             <div class="md:hidden">
-                <button class="text-gray-300 hover:text-primary-400 focus:outline-none">
-                    <span class="lucide text-3xl">&#xe9b2;</span> </button>
+                <button id="mobile-menu-btn" class="text-gray-300 hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md p-1" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <span class="lucide text-3xl">&#xe9b2;</span>
+                </button>
             </div>
         </nav>
+        
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800/95 backdrop-blur-md border-b border-gray-700/50 shadow-lg animate-slide-in">
+            <div class="container mx-auto px-4 py-3 space-y-3">
+                <a href="#features" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Features</a>
+                <a href="#rewards" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Rewards</a>
+                <a href="#" id="schedule-ride-nav-mobile" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Schedule Ride</a>
+                <button id="login-signup-btn-mobile" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105 mt-2">
+                    Login / Sign Up
+                </button>
+            </div>
+        </div>
     </header>
 
-    
+    <!-- Hero Section with Booking Form -->
     <section class="relative min-h-[600px] flex items-center justify-center text-center px-4 py-20 md:py-28 overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-gray-900/60 to-gray-900 z-0">
-            <img src="https://images.unsplash.com/photo-1586891962736-7c81e5f9b8a0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" 
-                 alt="Georgetown Cityscape at Night"
-                 class="w-full h-full object-cover opacity-20"
-                 onerror="this.onerror=null; this.src='https://placehold.co/1920x1080/111827/374151?text=Background+Image';">
+            <!-- Hero Background Image - With Fallback and Lazy Loading -->
+            <img 
+                src="https://images.unsplash.com/photo-1586891962736-7c81e5f9b8a0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" 
+                alt="Georgetown Cityscape at Night"
+                class="w-full h-full object-cover opacity-20"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='https://placehold.co/1920x1080/111827/374151?text=Guyana+Cityscape';">
         </div>
         
         <div class="relative z-10 max-w-4xl mx-auto"> 
-            
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-5 leading-tight fade-in">
+            <!-- Main Heading -->
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-5 leading-tight animate-fade-in">
                 Your Reliable Ride in Guyana
             </h1>
             
-            <p class="text-lg md:text-xl text-gray-300 mb-10 fade-in delay-1">
+            <!-- Subheading -->
+            <p class="text-lg md:text-xl text-gray-300 mb-10 animate-fade-in delay-1">
                 Book a safe and comfortable taxi anytime, anywhere with Salaam Rides.
             </p>
 
-            <div id="booking-section" class="fade-in delay-2">
+            <!-- Booking Section -->
+            <div id="booking-section" class="animate-fade-in delay-2">
                 <form id="booking-form" class="bg-gray-800/80 backdrop-blur-sm p-6 md:p-8 rounded-xl shadow-xl mb-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <!-- Pickup Location Input -->
                         <div class="relative">
-                             <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4b;</span> <input type="text" id="pickup-address" name="pickup" placeholder="Enter Pickup Location" required
-                                   class="w-full pl-10 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
-                             <button type="button" id="use-current-location-main" title="Use Current Location" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20">
-                                 <span class="lucide text-xl">&#xe9cd;</span> </button>
+                            <label for="pickup-address" class="sr-only">Pickup Location</label>
+                            <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10" aria-hidden="true">&#xea4b;</span>
+                            <input type="text" id="pickup-address" name="pickup" placeholder="Enter Pickup Location" required
+                                   class="w-full pl-10 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300"
+                                   aria-describedby="pickup-location-desc">
+                            <button type="button" id="use-current-location-main" title="Use Current Location" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20 focus:ring-2 focus:ring-primary-500 rounded-full p-1"
+                                    aria-label="Use your current location for pickup">
+                                <span class="lucide text-xl">&#xe9cd;</span>
+                            </button>
+                            <span id="pickup-location-desc" class="sr-only">Enter your pickup location or use the location button to detect automatically</span>
                         </div>
+                        <!-- Dropoff Location Input -->
                         <div class="relative">
-                             <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4a;</span> <input type="text" id="dropoff-address" name="dropoff" placeholder="Enter Dropoff Location" required
+                            <label for="dropoff-address" class="sr-only">Dropoff Location</label>
+                            <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10" aria-hidden="true">&#xea4a;</span>
+                            <input type="text" id="dropoff-address" name="dropoff" placeholder="Enter Dropoff Location" required
                                    class="w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
                         </div>
                     </div>
-                     <div class="mb-4">
+                    <!-- Vehicle Type Selection -->
+                    <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-400 mb-2 text-left">Vehicle Type</label>
                         <div class="flex flex-wrap gap-3 justify-center">
-                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200">
+                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200" tabindex="0" role="radio" aria-checked="true">
                                 <input type="radio" name="vehicleType" value="standard" class="form-radio text-primary-500 focus:ring-primary-500" checked>
                                 <span class="text-sm">Standard</span>
                             </label>
-                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200">
+                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200" tabindex="0" role="radio" aria-checked="false">
                                 <input type="radio" name="vehicleType" value="suv" class="form-radio text-primary-500 focus:ring-primary-500">
                                 <span class="text-sm">SUV</span>
                             </label>
-                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200">
+                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200" tabindex="0" role="radio" aria-checked="false">
                                 <input type="radio" name="vehicleType" value="premium" class="form-radio text-primary-500 focus:ring-primary-500">
                                 <span class="text-sm">Premium</span>
                             </label>
                         </div>
                     </div>
-                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                         <div class="relative md:col-span-1">
-                            <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">&#xeab2;</span> <input type="text" id="promo-code" name="promo" placeholder="Promo Code"
+                    <!-- Promo Code and Request Ride Section -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <!-- Promo Code Input -->
+                        <div class="relative md:col-span-1">
+                            <label for="promo-code" class="sr-only">Promo Code</label>
+                            <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" aria-hidden="true">&#xeab2;</span>
+                            <input type="text" id="promo-code" name="promo" placeholder="Promo Code"
                                    class="w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
-                         </div>
-                         <div id="fare-estimate" class="md:col-span-1 flex items-center justify-center text-gray-300 text-lg font-medium">
-                            
-                         </div>
-                         <button type="submit" class="w-full md:col-span-1 bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg flex items-center justify-center space-x-2 transform hover:scale-105">
-                            <span class="lucide text-xl">&#xeb15;</span> <span>Request Ride</span>
+                        </div>
+                        <!-- Fare Estimate Display -->
+                        <div id="fare-estimate" class="md:col-span-1 flex items-center justify-center text-gray-300 text-lg font-medium">
+                            <!-- Fare will be displayed here -->
+                        </div>
+                        <!-- Request Ride Button -->
+                        <button type="submit" id="request-ride-btn" class="w-full md:col-span-1 bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg flex items-center justify-center space-x-2 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-700">
+                            <span class="lucide text-xl" aria-hidden="true">&#xeb15;</span>
+                            <span>Request Ride</span>
                         </button>
                     </div>
+                    <!-- Schedule Ride Link -->
                     <div class="text-center mt-4">
-                         <a href="#" id="schedule-ride-link" class="text-primary-400 hover:text-primary-300 text-sm transition duration-300 underline">
+                        <a href="#" id="schedule-ride-link" class="text-primary-400 hover:text-primary-300 text-sm transition duration-300 underline focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-sm px-2 py-1">
                             Or Schedule a Ride for Later
-                         </a>
+                        </a>
                     </div>
                 </form>
             </div>
 
-            <div id="ride-status" class="hidden mt-6 bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-xl text-left fade-in">
-                 <h3 class="text-xl font-semibold text-white mb-3 text-center">Booking Confirmed!</h3>
-                 <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Status:</span> <span id="status-message">Searching for driver...</span></p>
-                 <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Driver:</span> <span id="driver-name">---</span> (<span id="driver-rating">---</span> <span class="lucide text-yellow-400 text-sm">&#xeae5;</span>)</p> <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Vehicle:</span> <span id="driver-vehicle">---</span></p>
-                 <p class="text-gray-300 mb-4"><span class="font-medium text-gray-100">Est. Arrival:</span> <span id="driver-eta">---</span> minutes</p>
-                 <button id="cancel-ride-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Cancel Ride</button>
+            <!-- Ride Status Section (Initially Hidden) -->
+            <div id="ride-status" class="hidden mt-6 bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-xl text-left animate-slide-up">
+                <div class="relative">
+                    <h3 class="text-xl font-semibold text-white mb-3 text-center">Booking Confirmed!</h3>
+                    
+                    <!-- Loading Animation (Initially Visible) -->
+                    <div id="ride-status-loading" class="absolute inset-0 flex items-center justify-center bg-gray-800/95 rounded-xl">
+                        <div class="flex flex-col items-center">
+                            <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mb-2" role="status"></div>
+                            <p class="text-gray-300">Finding your driver...</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Status:</span> <span id="status-message">Searching for driver...</span></p>
+                    <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Driver:</span> <span id="driver-name">---</span> (<span id="driver-rating">---</span> <span class="lucide text-yellow-400 text-sm" aria-hidden="true">&#xeae5;</span>)</p>
+                    <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Vehicle:</span> <span id="driver-vehicle">---</span></p>
+                    <p class="text-gray-300 mb-4"><span class="font-medium text-gray-100">Est. Arrival:</span> <span id="driver-eta">---</span> minutes</p>
+                    
+                    <!-- Driver Card - Will be shown after driver is assigned -->
+                    <div id="driver-card" class="hidden mt-4 p-3 bg-gray-700/60 rounded-lg border border-gray-600 flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center">
+                            <span class="lucide text-2xl text-gray-300" aria-hidden="true">&#xebe4;</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-200" id="driver-card-name">John D.</p>
+                            <div class="flex items-center space-x-1">
+                                <span class="lucide text-yellow-400 text-sm" aria-hidden="true">&#xeae5;</span>
+                                <span class="text-sm text-gray-300" id="driver-card-rating">4.9</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="p-2 bg-gray-600 rounded-full text-gray-300 hover:bg-primary-600 hover:text-white transition-colors" aria-label="Call driver">
+                                <span class="lucide text-lg" aria-hidden="true">&#xea9d;</span>
+                            </button>
+                            <button class="p-2 bg-gray-600 rounded-full text-gray-300 hover:bg-primary-600 hover:text-white transition-colors" aria-label="Text driver">
+                                <span class="lucide text-lg" aria-hidden="true">&#xeb28;</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button id="cancel-ride-btn" class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-1 focus:ring-offset-gray-800">Cancel Ride</button>
+                </div>
             </div>
 
-            <div id="map-canvas" class="fade-in delay-3">
+            <!-- Map Canvas -->
+            <div id="map-canvas" class="animate-fade-in delay-3">
+                <!-- Map will be loaded here -->
+                <!-- Fallback text when map doesn't load -->
+                <div id="map-fallback" class="hidden h-full w-full flex items-center justify-center">
+                    <p class="text-gray-400">Map could not be loaded. Please check your connection.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="features" class="py-16 md:py-24 bg-gray-800">
-        <div class="container mx-auto px-4 text-center">
+    <!-- Features Section -->
+    <section id="features" class="py-16 md:py-24 bg-gray-800 relative overflow-hidden">
+        <!-- Pattern overlay -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none">
+            <img src="islamic-pattern.svg" alt="" class="w-full h-full object-cover" aria-hidden="true">
+        </div>
+        
+        <div class="container mx-auto px-4 text-center relative z-10">
             <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Salaam Rides?</h2>
             <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
                 Experience the difference with our commitment to safety, reliability, and convenience across Guyana.
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea9b;</span> <h3 class="text-xl font-semibold text-white mb-2">Safety First</h3>
+                <!-- Feature Card 1 -->
+                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500 feature-card">
+                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block" aria-hidden="true">&#xea9b;</span>
+                    <h3 class="text-xl font-semibold text-white mb-2">Safety First</h3>
                     <p class="text-gray-300">Verified drivers, real-time ride tracking, and in-app emergency features ensure your peace of mind.</p>
                 </div>
-                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                     <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea58;</span> <h3 class="text-xl font-semibold text-white mb-2">Simple Booking</h3>
+                <!-- Feature Card 2 -->
+                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500 feature-card">
+                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block" aria-hidden="true">&#xea58;</span>
+                    <h3 class="text-xl font-semibold text-white mb-2">Simple Booking</h3>
                     <p class="text-gray-300">Book your ride in seconds through our user-friendly website or upcoming mobile app.</p>
                 </div>
-                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xe953;</span> <h3 class="text-xl font-semibold text-white mb-2">Schedule Ahead</h3>
+                <!-- Feature Card 3 -->
+                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500 feature-card">
+                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block" aria-hidden="true">&#xe953;</span>
+                    <h3 class="text-xl font-semibold text-white mb-2">Schedule Ahead</h3>
                     <p class="text-gray-300">Plan your trips in advance. Schedule rides for airport transfers, appointments, or any occasion.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="rewards" class="py-16 md:py-24 bg-gray-900">
-        <div class="container mx-auto px-4 text-center">
-             <span class="lucide text-5xl text-yellow-400 mb-4 inline-block pulse-reward">&#xeae5;</span> <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Salaam Rewards</h2>
+    <!-- Rewards Section -->
+    <section id="rewards" class="py-16 md:py-24 bg-gray-900 relative overflow-hidden">
+        <!-- Pattern overlay -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none">
+            <img src="islamic-pattern.svg" alt="" class="w-full h-full object-cover" aria-hidden="true">
+        </div>
+        
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <span class="lucide text-5xl text-yellow-400 mb-4 inline-block animate-pulse-slow" aria-hidden="true">&#xeae5;</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Salaam Rewards</h2>
             <p class="text-lg text-gray-400 mb-10 max-w-2xl mx-auto">
                 We appreciate our loyal customers! Earn points for every ride and redeem them for discounts and exclusive perks.
             </p>
             <div class="bg-gradient-to-br from-primary-700 to-primary-900 p-8 rounded-xl shadow-xl max-w-lg mx-auto border border-primary-600">
-                 <h3 class="text-2xl font-semibold text-white mb-4">How it Works</h3>
-                 <ul class="text-left space-y-3 text-primary-100">
+                <h3 class="text-2xl font-semibold text-white mb-4">How it Works</h3>
+                <ul class="text-left space-y-3 text-primary-100">
                     <li class="flex items-start space-x-3">
-                        <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Sign up or log in to your Salaam Rides account.</span>
+                        <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0" aria-hidden="true">&#xe96c;</span>
+                        <span>Sign up or log in to your Salaam Rides account.</span>
                     </li>
-                     <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Earn points automatically for every completed ride.</span>
-                     </li>
-                     <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Track your points balance in your profile.</span>
-                     </li>
-                     <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Redeem points for ride discounts or special offers.</span>
-                     </li>
-                 </ul>
-                 <button id="join-rewards-btn" class="mt-8 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
-                     Join Rewards Now!
-                 </button>
+                    <li class="flex items-start space-x-3">
+                        <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0" aria-hidden="true">&#xe96c;</span>
+                        <span>Earn points automatically for every completed ride.</span>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0" aria-hidden="true">&#xe96c;</span>
+                        <span>Track your points balance in your profile.</span>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0" aria-hidden="true">&#xe96c;</span>
+                        <span>Redeem points for ride discounts or special offers.</span>
+                    </li>
+                </ul>
+                <button id="join-rewards-btn" class="mt-8 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-primary-800">
+                    Join Rewards Now!
+                </button>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer class="bg-gray-800 border-t border-gray-700/50 py-8">
-        <div class="container mx-auto px-4 text-center text-gray-400">
-            <p>&copy; <span id="current-year"></span> Salaam Rides. All Rights Reserved.</p>
-            <p class="text-sm mt-2">Serving Georgetown, Linden, Berbice, and all across Guyana.</p>
-            <div class="mt-4 space-x-4">
-                <a href="#" class="hover:text-primary-400 transition duration-300">Privacy Policy</a>
-                <span>|</span>
-                <a href="#" class="hover:text-primary-400 transition duration-300">Terms of Service</a>
-                 <span>|</span>
-                 <a href="#" class="hover:text-primary-400 transition duration-300">Contact Us</a>
+        <div class="container mx-auto px-4 md:flex md:justify-between md:items-center">
+            <div class="text-center md:text-left mb-6 md:mb-0">
+                <p class="text-gray-400">&copy; <span id="current-year"></span> Salaam Rides. All Rights Reserved.</p>
+                <p class="text-sm mt-2 text-gray-500">Serving Georgetown, Linden, Berbice, and all across Guyana.</p>
             </div>
+            <div class="flex flex-wrap justify-center md:justify-end space-x-4">
+                <a href="#" class="hover:text-primary-400 transition duration-300 text-gray-400">Privacy Policy</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-primary-400 transition duration-300 text-gray-400">Terms of Service</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-primary-400 transition duration-300 text-gray-400">Contact Us</a>
+            </div>
+        </div>
+        <div class="mt-6 text-center text-xs text-gray-600">
+            <p>For emergencies, please call our 24/7 hotline: +592-123-4567</p>
         </div>
     </footer>
 
-    <div id="confirmation-message" class="bg-green-600 text-white text-sm font-medium py-3 px-6 rounded-lg shadow-lg">
+    <!-- Toast Notification -->
+    <div id="confirmation-message" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-sm font-medium py-3 px-6 rounded-lg shadow-lg z-50 flex items-center space-x-2 opacity-0 transition-all duration-300">
+        <span class="lucide hidden" id="confirmation-icon" aria-hidden="true">&#xe96c;</span>
         <span id="confirmation-text">Message</span>
+        <button id="close-notification" class="ml-2 text-white hover:text-white/80" aria-label="Close notification">
+            <span class="lucide text-sm" aria-hidden="true">&#xea76;</span>
+        </button>
     </div>
 
-    <div id="account-modal" class="fixed inset-0 z-50 items-center justify-center">
-        <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700">
-            <span class="modal-close-btn text-gray-500 hover:text-primary-400" onclick="closeModal('account-modal')">&times;</span>
+    <!-- Login/Signup Modal -->
+    <div id="account-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="account-modal-overlay"></div>
+        <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700 max-w-md w-full mx-auto relative z-10">
+            <button class="modal-close-btn text-gray-500 hover:text-primary-400 absolute right-4 top-4 focus:outline-none focus:text-primary-500" aria-label="Close modal" onclick="closeModal('account-modal')">
+                <span class="lucide" aria-hidden="true">&#xea76;</span>
+            </button>
             <h2 class="text-2xl font-semibold text-white mb-6 text-center">Welcome to Salaam Rides</h2>
             <div class="flex border-b border-gray-600 mb-6">
-                <button id="login-tab-btn" class="flex-1 py-2 text-center font-medium text-primary-400 border-b-2 border-primary-400 transition-colors" onclick="switchTab('login')">Login</button>
-                <button id="signup-tab-btn" class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300 transition-colors" onclick="switchTab('signup')">Sign Up</button>
+                <button id="login-tab-btn" class="flex-1 py-2 text-center font-medium text-primary-400 border-b-2 border-primary-400 transition-colors" aria-selected="true" role="tab" onclick="switchTab('login')">Login</button>
+                <button id="signup-tab-btn" class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300 transition-colors" aria-selected="false" role="tab" onclick="switchTab('signup')">Sign Up</button>
             </div>
-            <form id="login-form" class="space-y-4">
+            <!-- Login Form -->
+            <form id="login-form" class="space-y-4" role="tabpanel" aria-labelledby="login-tab-btn">
                 <div>
                     <label for="login-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
                     <input type="email" id="login-email" name="email" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 </div>
-                 <div>
+                <div>
                     <label for="login-password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
-                    <input type="password" id="login-password" name="password" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <div class="relative">
+                        <input type="password" id="login-password" name="password" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <button type="button" id="toggle-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-400" aria-label="Toggle password visibility">
+                            <span class="lucide text-lg toggle-password-icon" aria-hidden="true">&#xea30;</span>
+                        </button>
+                    </div>
                 </div>
-                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105">Login</button>
-                 <p class="text-xs text-gray-400 text-center mt-2"><a href="#" class="hover:underline hover:text-primary-300">Forgot password?</a></p>
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="form-checkbox text-primary-500 focus:ring-primary-500 h-4 w-4 rounded">
+                        <span class="ml-2 text-sm text-gray-400">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm text-primary-400 hover:text-primary-300 hover:underline">Forgot password?</a>
+                </div>
+                <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Login</button>
             </form>
-            <form id="signup-form" class="space-y-4 hidden">
-                 <div>
+            <!-- Signup Form -->
+            <form id="signup-form" class="space-y-4 hidden" role="tabpanel" aria-labelledby="signup-tab-btn">
+                <div>
                     <label for="signup-name" class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
                     <input type="text" id="signup-name" name="name" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 </div>
@@ -252,48 +423,69 @@
                     <label for="signup-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
                     <input type="email" id="signup-email" name="email" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 </div>
-                 <div>
+                <div>
                     <label for="signup-password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
-                    <input type="password" id="signup-password" name="password" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <div class="relative">
+                        <input type="password" id="signup-password" name="password" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <button type="button" id="toggle-signup-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-400" aria-label="Toggle password visibility">
+                            <span class="lucide text-lg toggle-password-icon" aria-hidden="true">&#xea30;</span>
+                        </button>
+                    </div>
+                    <div class="mt-1 text-xs text-gray-500">Password must be at least 8 characters</div>
                 </div>
-                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105">Create Account</button>
-                 <p class="text-xs text-gray-400 text-center mt-2">By signing up, you agree to our <a href="#" class="hover:underline hover:text-primary-300">Terms of Service</a>.</p>
+                <div>
+                    <label for="signup-phone" class="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
+                    <input type="tel" id="signup-phone" name="phone" required placeholder="+592" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Create Account</button>
+                <p class="text-xs text-gray-400 text-center mt-2">By signing up, you agree to our <a href="#" class="hover:underline hover:text-primary-300">Terms of Service</a> and <a href="#" class="hover:underline hover:text-primary-300">Privacy Policy</a>.</p>
             </form>
         </div>
     </div>
 
-    <div id="schedule-modal" class="fixed inset-0 z-50 items-center justify-center">
-        <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700">
-            <span class="modal-close-btn text-gray-500 hover:text-primary-400" onclick="closeModal('schedule-modal')">&times;</span>
+    <!-- Schedule Ride Modal -->
+    <div id="schedule-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="schedule-modal-overlay"></div>
+        <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700 max-w-lg w-full mx-auto relative z-10">
+            <button class="modal-close-btn text-gray-500 hover:text-primary-400 absolute right-4 top-4 focus:outline-none focus:text-primary-500" aria-label="Close modal" onclick="closeModal('schedule-modal')">
+                <span class="lucide" aria-hidden="true">&#xea76;</span>
+            </button>
             <h2 class="text-2xl font-semibold text-white mb-6 text-center">Schedule Your Ride</h2>
             <form id="schedule-form" class="space-y-4">
-                 <div class="relative">
+                <!-- Pickup Location Input -->
+                <div class="relative">
                     <label for="schedule-pickup-address" class="block text-sm font-medium text-gray-300 mb-1">Pickup Location</label>
-                    <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4b;</span> <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full pl-10 pr-12 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    <button type="button" id="use-current-location-schedule" title="Use Current Location" class="absolute right-3 top-[38px] transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20">
-                        <span class="lucide text-lg">&#xe9cd;</span> </button>
+                    <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10" aria-hidden="true">&#xea4b;</span>
+                    <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full pl-10 pr-12 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <button type="button" id="use-current-location-schedule" title="Use Current Location" class="absolute right-3 top-[38px] transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20 focus:ring-2 focus:ring-primary-500 rounded-full p-1" aria-label="Use your current location for pickup">
+                        <span class="lucide text-lg" aria-hidden="true">&#xe9cd;</span>
+                    </button>
                 </div>
-                 <div class="relative">
+                <!-- Dropoff Location Input -->
+                <div class="relative">
                     <label for="schedule-dropoff-address" class="block text-sm font-medium text-gray-300 mb-1">Dropoff Location</label>
-                     <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4a;</span> <input type="text" id="schedule-dropoff-address" name="dropoff" required placeholder="Enter Dropoff Location" class="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10" aria-hidden="true">&#xea4a;</span>
+                    <input type="text" id="schedule-dropoff-address" name="dropoff" required placeholder="Enter Dropoff Location" class="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 </div>
-                 <div class="mb-4">
+                <!-- Vehicle Type Selection -->
+                <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-300 mb-2">Vehicle Type</label>
                     <div class="flex flex-wrap gap-3">
-                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center" tabindex="0" role="radio" aria-checked="true">
                             <input type="radio" name="scheduleVehicleType" value="standard" class="form-radio text-primary-500 focus:ring-primary-500" checked>
                             <span class="text-sm">Standard</span>
                         </label>
-                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center" tabindex="0" role="radio" aria-checked="false">
                             <input type="radio" name="scheduleVehicleType" value="suv" class="form-radio text-primary-500 focus:ring-primary-500">
                             <span class="text-sm">SUV</span>
                         </label>
-                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center" tabindex="0" role="radio" aria-checked="false">
                             <input type="radio" name="scheduleVehicleType" value="premium" class="form-radio text-primary-500 focus:ring-primary-500">
                             <span class="text-sm">Premium</span>
                         </label>
                     </div>
                 </div>
+                <!-- Date and Time Inputs -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label for="schedule-date" class="block text-sm font-medium text-gray-300 mb-1">Date</label>
@@ -304,16 +496,38 @@
                         <input type="time" id="schedule-time" name="time" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none" style="color-scheme: dark;">
                     </div>
                 </div>
-                 <div>
+                <!-- Notes Textarea -->
+                <div>
                     <label for="schedule-notes" class="block text-sm font-medium text-gray-300 mb-1">Notes (Optional)</label>
                     <textarea id="schedule-notes" name="notes" rows="2" placeholder="Any special instructions? e.g., Flight number" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"></textarea>
                 </div>
-                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105">Schedule Ride</button>
+                <!-- Est. Fare Display -->
+                <div id="schedule-fare-estimate" class="text-center text-gray-300 text-lg font-medium p-2 bg-gray-700/50 rounded-lg">
+                    <!-- Schedule fare will be displayed here -->
+                </div>
+                <!-- Schedule Ride Button -->
+                <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Schedule Ride</button>
             </form>
         </div>
     </div>
-
     
+    <!-- Loading Overlay - Used during page transitions -->
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="flex flex-col items-center">
+            <div class="spinner-border animate-spin inline-block w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mb-4"></div>
+            <p class="text-xl text-white">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Offline Alert -->
+    <div id="offline-alert" class="fixed bottom-0 inset-x-0 bg-red-600 text-white p-3 text-center transform translate-y-full transition-transform duration-300 z-50">
+        <p class="flex items-center justify-center">
+            <span class="lucide mr-2" aria-hidden="true">&#xea0e;</span>
+            <span>You are currently offline. Some features may be unavailable.</span>
+        </p>
+    </div>
+
+    <!-- Custom Scripts -->
     <script src="script.js"></script>
 
 </body>
