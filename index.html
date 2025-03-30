@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salaam Rides - Reliable Taxi Service in Guyana</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script> 
+    <title>Schedule Your Ride - Salaam Rides</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,10 +11,10 @@
     
     <link rel="stylesheet" href="style.css">
     
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // Tailwind Configuration
       tailwind.config = {
-        darkMode: 'class', 
         theme: {
           extend: {
             fontFamily: {
@@ -25,34 +23,19 @@
             colors: {
               primary: { 
                 DEFAULT: '#10b981', 
-                '50': '#ecfdf5',
-                '100': '#d1fae5',
-                '200': '#a7f3d0',
-                '300': '#6ee7b7',
-                '400': '#34d399',
                 '500': '#10b981',
                 '600': '#059669',
-                '700': '#047857',
-                '800': '#065f46',
-                '900': '#064e3b',
-                '950': '#022c22',
               },
             }
           }
         }
       }
     </script>
-
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-6uXAa6MkIMwlYYwMIVBq5s3T0aTh0EI&libraries=places&callback=initMap">
-    </script>
-
 </head>
-<body class="bg-gray-900 text-gray-200 font-sans antialiased dark">
-
+<body class="bg-gray-900 text-gray-200 font-sans">
     <header class="bg-gray-900/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-700/50 shadow-md">
         <nav class="container mx-auto px-4 lg:px-6 py-3 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-primary-400 hover:text-primary-300 transition-colors">
+            <a href="#" class="text-2xl font-bold text-primary-500 hover:text-primary-400 transition-colors">
                 Salaam Rides <span class="text-xs font-normal text-gray-400">Guyana</span>
             </a>
             <div class="hidden md:flex items-center space-x-6">
@@ -65,256 +48,124 @@
             </div>
             <div class="md:hidden">
                 <button class="text-gray-300 hover:text-primary-400 focus:outline-none">
-                    <span class="lucide text-3xl">&#xe9b2;</span> </button>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
         </nav>
     </header>
 
-    
-    <section class="relative min-h-[600px] flex items-center justify-center text-center px-4 py-20 md:py-28 overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-gray-900/60 to-gray-900 z-0">
-            <img src="https://images.unsplash.com/photo-1586891962736-7c81e5f9b8a0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" 
-                 alt="Georgetown Cityscape at Night"
-                 class="w-full h-full object-cover opacity-20"
-                 onerror="this.onerror=null; this.src='https://placehold.co/1920x1080/111827/374151?text=Background+Image';">
-        </div>
-        
-        <div class="relative z-10 max-w-4xl mx-auto"> 
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-gray-800 rounded-xl shadow-xl p-6 max-w-3xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-6 text-white">Schedule Your Ride</h2>
             
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-5 leading-tight fade-in">
-                Your Reliable Ride in Guyana
-            </h1>
-            
-            <p class="text-lg md:text-xl text-gray-300 mb-10 fade-in delay-1">
-                Book a safe and comfortable taxi anytime, anywhere with Salaam Rides.
-            </p>
-
-            <div id="booking-section" class="fade-in delay-2">
-                <form id="booking-form" class="bg-gray-800/80 backdrop-blur-sm p-6 md:p-8 rounded-xl shadow-xl mb-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div class="relative">
-                             <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4b;</span> <input type="text" id="pickup-address" name="pickup" placeholder="Enter Pickup Location" required
-                                   class="w-full pl-10 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
-                             <button type="button" id="use-current-location-main" title="Use Current Location" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20">
-                                 <span class="lucide text-xl">&#xe9cd;</span> </button>
-                        </div>
-                        <div class="relative">
-                             <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4a;</span> <input type="text" id="dropoff-address" name="dropoff" placeholder="Enter Dropoff Location" required
-                                   class="w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
-                        </div>
-                    </div>
-                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-400 mb-2 text-left">Vehicle Type</label>
-                        <div class="flex flex-wrap gap-3 justify-center">
-                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200">
-                                <input type="radio" name="vehicleType" value="standard" class="form-radio text-primary-500 focus:ring-primary-500" checked>
-                                <span class="text-sm">Standard</span>
-                            </label>
-                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200">
-                                <input type="radio" name="vehicleType" value="suv" class="form-radio text-primary-500 focus:ring-primary-500">
-                                <span class="text-sm">SUV</span>
-                            </label>
-                            <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200">
-                                <input type="radio" name="vehicleType" value="premium" class="form-radio text-primary-500 focus:ring-primary-500">
-                                <span class="text-sm">Premium</span>
-                            </label>
-                        </div>
-                    </div>
-                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                         <div class="relative md:col-span-1">
-                            <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">&#xeab2;</span> <input type="text" id="promo-code" name="promo" placeholder="Promo Code"
-                                   class="w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
-                         </div>
-                         <div id="fare-estimate" class="md:col-span-1 flex items-center justify-center text-gray-300 text-lg font-medium">
-                            
-                         </div>
-                         <button type="submit" class="w-full md:col-span-1 bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg flex items-center justify-center space-x-2 transform hover:scale-105">
-                            <span class="lucide text-xl">&#xeb15;</span> <span>Request Ride</span>
+            <form id="schedule-form" class="space-y-6">
+                <div class="space-y-2">
+                    <label for="pickup-location" class="block text-sm font-medium text-gray-300">Pickup Location</label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="pickup-location" 
+                            name="pickup" 
+                            placeholder="Enter Pickup Location" 
+                            class="w-full pl-4 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500"
+                            required
+                        >
+                        <button 
+                            type="button" 
+                            id="use-current-location-main" 
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-500 hover:text-primary-400"
+                            title="Use Current Location"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
                         </button>
                     </div>
-                    <div class="text-center mt-4">
-                         <a href="#" id="schedule-ride-link" class="text-primary-400 hover:text-primary-300 text-sm transition duration-300 underline">
-                            Or Schedule a Ride for Later
-                         </a>
+                </div>
+                
+                <div class="space-y-2">
+                    <label for="dropoff-location" class="block text-sm font-medium text-gray-300">Dropoff Location</label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="dropoff-location" 
+                            name="dropoff" 
+                            placeholder="Enter Dropoff Location" 
+                            class="w-full pl-4 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500"
+                            required
+                        >
                     </div>
-                </form>
-            </div>
-
-            <div id="ride-status" class="hidden mt-6 bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-xl text-left fade-in">
-                 <h3 class="text-xl font-semibold text-white mb-3 text-center">Booking Confirmed!</h3>
-                 <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Status:</span> <span id="status-message">Searching for driver...</span></p>
-                 <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Driver:</span> <span id="driver-name">---</span> (<span id="driver-rating">---</span> <span class="lucide text-yellow-400 text-sm">&#xeae5;</span>)</p> <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Vehicle:</span> <span id="driver-vehicle">---</span></p>
-                 <p class="text-gray-300 mb-4"><span class="font-medium text-gray-100">Est. Arrival:</span> <span id="driver-eta">---</span> minutes</p>
-                 <button id="cancel-ride-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Cancel Ride</button>
-            </div>
-
-            <div id="map-canvas" class="fade-in delay-3">
-            </div>
-        </div>
-    </section>
-
-    <section id="features" class="py-16 md:py-24 bg-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Salaam Rides?</h2>
-            <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
-                Experience the difference with our commitment to safety, reliability, and convenience across Guyana.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea9b;</span> <h3 class="text-xl font-semibold text-white mb-2">Safety First</h3>
-                    <p class="text-gray-300">Verified drivers, real-time ride tracking, and in-app emergency features ensure your peace of mind.</p>
                 </div>
-                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                     <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea58;</span> <h3 class="text-xl font-semibold text-white mb-2">Simple Booking</h3>
-                    <p class="text-gray-300">Book your ride in seconds through our user-friendly website or upcoming mobile app.</p>
+                
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-300">Vehicle Type</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <label class="flex items-center justify-center p-4 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:bg-gray-600 transition">
+                            <input type="radio" name="vehicle-type" value="standard" class="mr-2 text-primary-500" checked>
+                            <span>Standard</span>
+                        </label>
+                        <label class="flex items-center justify-center p-4 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:bg-gray-600 transition">
+                            <input type="radio" name="vehicle-type" value="suv" class="mr-2 text-primary-500">
+                            <span>SUV</span>
+                        </label>
+                        <label class="flex items-center justify-center p-4 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:bg-gray-600 transition">
+                            <input type="radio" name="vehicle-type" value="premium" class="mr-2 text-primary-500">
+                            <span>Premium</span>
+                        </label>
+                    </div>
                 </div>
-                <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xe953;</span> <h3 class="text-xl font-semibold text-white mb-2">Schedule Ahead</h3>
-                    <p class="text-gray-300">Plan your trips in advance. Schedule rides for airport transfers, appointments, or any occasion.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="schedule-date" class="block text-sm font-medium text-gray-300">Date</label>
+                        <input 
+                            type="date" 
+                            id="schedule-date" 
+                            name="date" 
+                            class="w-full pl-4 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-primary-500"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="schedule-time" class="block text-sm font-medium text-gray-300">Time</label>
+                        <input 
+                            type="time" 
+                            id="schedule-time" 
+                            name="time" 
+                            class="w-full pl-4 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-primary-500"
+                            required
+                        >
+                    </div>
                 </div>
-            </div>
+                
+                <div class="space-y-2">
+                    <label for="notes" class="block text-sm font-medium text-gray-300">Notes (Optional)</label>
+                    <textarea 
+                        id="notes" 
+                        name="notes" 
+                        placeholder="Any special instructions? e.g., Flight number"
+                        class="w-full pl-4 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500"
+                        rows="3"
+                    ></textarea>
+                </div>
+                
+                <button 
+                    type="submit" 
+                    class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition shadow-md hover:shadow-lg"
+                >
+                    Schedule Ride
+                </button>
+            </form>
         </div>
-    </section>
-
-    <section id="rewards" class="py-16 md:py-24 bg-gray-900">
-        <div class="container mx-auto px-4 text-center">
-             <span class="lucide text-5xl text-yellow-400 mb-4 inline-block pulse-reward">&#xeae5;</span> <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Salaam Rewards</h2>
-            <p class="text-lg text-gray-400 mb-10 max-w-2xl mx-auto">
-                We appreciate our loyal customers! Earn points for every ride and redeem them for discounts and exclusive perks.
-            </p>
-            <div class="bg-gradient-to-br from-primary-700 to-primary-900 p-8 rounded-xl shadow-xl max-w-lg mx-auto border border-primary-600">
-                 <h3 class="text-2xl font-semibold text-white mb-4">How it Works</h3>
-                 <ul class="text-left space-y-3 text-primary-100">
-                    <li class="flex items-start space-x-3">
-                        <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Sign up or log in to your Salaam Rides account.</span>
-                    </li>
-                     <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Earn points automatically for every completed ride.</span>
-                     </li>
-                     <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Track your points balance in your profile.</span>
-                     </li>
-                     <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Redeem points for ride discounts or special offers.</span>
-                     </li>
-                 </ul>
-                 <button id="join-rewards-btn" class="mt-8 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
-                     Join Rewards Now!
-                 </button>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-gray-800 border-t border-gray-700/50 py-8">
-        <div class="container mx-auto px-4 text-center text-gray-400">
-            <p>&copy; <span id="current-year"></span> Salaam Rides. All Rights Reserved.</p>
-            <p class="text-sm mt-2">Serving Georgetown, Linden, Berbice, and all across Guyana.</p>
-            <div class="mt-4 space-x-4">
-                <a href="#" class="hover:text-primary-400 transition duration-300">Privacy Policy</a>
-                <span>|</span>
-                <a href="#" class="hover:text-primary-400 transition duration-300">Terms of Service</a>
-                 <span>|</span>
-                 <a href="#" class="hover:text-primary-400 transition duration-300">Contact Us</a>
-            </div>
-        </div>
-    </footer>
-
+    </div>
+    
     <div id="confirmation-message" class="bg-green-600 text-white text-sm font-medium py-3 px-6 rounded-lg shadow-lg">
         <span id="confirmation-text">Message</span>
     </div>
 
-    <div id="account-modal" class="fixed inset-0 z-50 items-center justify-center">
-        <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700">
-            <span class="modal-close-btn text-gray-500 hover:text-primary-400" onclick="closeModal('account-modal')">&times;</span>
-            <h2 class="text-2xl font-semibold text-white mb-6 text-center">Welcome to Salaam Rides</h2>
-            <div class="flex border-b border-gray-600 mb-6">
-                <button id="login-tab-btn" class="flex-1 py-2 text-center font-medium text-primary-400 border-b-2 border-primary-400 transition-colors" onclick="switchTab('login')">Login</button>
-                <button id="signup-tab-btn" class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300 transition-colors" onclick="switchTab('signup')">Sign Up</button>
-            </div>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label for="login-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                    <input type="email" id="login-email" name="email" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                </div>
-                 <div>
-                    <label for="login-password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
-                    <input type="password" id="login-password" name="password" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                </div>
-                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105">Login</button>
-                 <p class="text-xs text-gray-400 text-center mt-2"><a href="#" class="hover:underline hover:text-primary-300">Forgot password?</a></p>
-            </form>
-            <form id="signup-form" class="space-y-4 hidden">
-                 <div>
-                    <label for="signup-name" class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
-                    <input type="text" id="signup-name" name="name" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                </div>
-                <div>
-                    <label for="signup-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                    <input type="email" id="signup-email" name="email" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                </div>
-                 <div>
-                    <label for="signup-password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
-                    <input type="password" id="signup-password" name="password" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                </div>
-                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105">Create Account</button>
-                 <p class="text-xs text-gray-400 text-center mt-2">By signing up, you agree to our <a href="#" class="hover:underline hover:text-primary-300">Terms of Service</a>.</p>
-            </form>
-        </div>
-    </div>
-
-    <div id="schedule-modal" class="fixed inset-0 z-50 items-center justify-center">
-        <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700">
-            <span class="modal-close-btn text-gray-500 hover:text-primary-400" onclick="closeModal('schedule-modal')">&times;</span>
-            <h2 class="text-2xl font-semibold text-white mb-6 text-center">Schedule Your Ride</h2>
-            <form id="schedule-form" class="space-y-4">
-                 <div class="relative">
-                    <label for="schedule-pickup-address" class="block text-sm font-medium text-gray-300 mb-1">Pickup Location</label>
-                    <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4b;</span> <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full pl-10 pr-12 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    <button type="button" id="use-current-location-schedule" title="Use Current Location" class="absolute right-3 top-[38px] transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20">
-                        <span class="lucide text-lg">&#xe9cd;</span> </button>
-                </div>
-                 <div class="relative">
-                    <label for="schedule-dropoff-address" class="block text-sm font-medium text-gray-300 mb-1">Dropoff Location</label>
-                     <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4a;</span> <input type="text" id="schedule-dropoff-address" name="dropoff" required placeholder="Enter Dropoff Location" class="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                </div>
-                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Vehicle Type</label>
-                    <div class="flex flex-wrap gap-3">
-                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center">
-                            <input type="radio" name="scheduleVehicleType" value="standard" class="form-radio text-primary-500 focus:ring-primary-500" checked>
-                            <span class="text-sm">Standard</span>
-                        </label>
-                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center">
-                            <input type="radio" name="scheduleVehicleType" value="suv" class="form-radio text-primary-500 focus:ring-primary-500">
-                            <span class="text-sm">SUV</span>
-                        </label>
-                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center">
-                            <input type="radio" name="scheduleVehicleType" value="premium" class="form-radio text-primary-500 focus:ring-primary-500">
-                            <span class="text-sm">Premium</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label for="schedule-date" class="block text-sm font-medium text-gray-300 mb-1">Date</label>
-                        <input type="date" id="schedule-date" name="date" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none" style="color-scheme: dark;">
-                    </div>
-                    <div>
-                        <label for="schedule-time" class="block text-sm font-medium text-gray-300 mb-1">Time</label>
-                        <input type="time" id="schedule-time" name="time" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none" style="color-scheme: dark;">
-                    </div>
-                </div>
-                 <div>
-                    <label for="schedule-notes" class="block text-sm font-medium text-gray-300 mb-1">Notes (Optional)</label>
-                    <textarea id="schedule-notes" name="notes" rows="2" placeholder="Any special instructions? e.g., Flight number" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"></textarea>
-                </div>
-                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105">Schedule Ride</button>
-            </form>
-        </div>
-    </div>
-
-    
     <script src="script.js"></script>
-
 </body>
 </html>
