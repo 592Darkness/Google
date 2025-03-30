@@ -94,12 +94,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div class="relative">
                              <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4b;</span> 
-                             <input type="text" id="pickup-address" name="pickup" placeholder="Enter Pickup Location" required
-                                   class="w-full pl-10 pr-10 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
                              
-                             {/* Added z-20 */}
+                             {/* Increased right padding to pr-12 */}
+                             <input type="text" id="pickup-address" name="pickup" placeholder="Enter Pickup Location" required
+                                   class="w-full pl-10 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
+                             
+                             {/* Changed icon to navigation (&#xe9cd;) and kept z-20 */}
                              <button type="button" id="use-current-location-main" title="Use Current Location" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20">
-                                 <span class="lucide text-xl">&#xe9a3;</span> 
+                                 <span class="lucide text-xl">&#xe9cd;</span> 
                              </button>
                         </div>
                         <div class="relative">
@@ -286,11 +288,13 @@
                  <div class="relative">
                     <label for="schedule-pickup-address" class="block text-sm font-medium text-gray-300 mb-1">Pickup Location</label>
                     <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4b;</span>
-                    <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full pl-10 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                     
-                    {/* Added z-20 */}
+                    {/* Increased right padding to pr-12 */}
+                    <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full pl-10 pr-12 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    
+                    {/* Changed icon to navigation (&#xe9cd;) and kept z-20 */}
                     <button type="button" id="use-current-location-schedule" title="Use Current Location" class="absolute right-3 top-[38px] transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20">
-                        <span class="lucide text-lg">&#xe9a3;</span> 
+                        <span class="lucide text-lg">&#xe9cd;</span> 
                     </button>
                 </div>
                  <div class="relative">
