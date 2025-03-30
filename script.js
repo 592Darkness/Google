@@ -1,5 +1,6 @@
 let map; 
 let pickupAutocomplete, dropoffAutocomplete, schedulePickupAutocomplete, scheduleDropoffAutocomplete;
+let geocoder; // Declare geocoder globally
 
 // --- Initialization Function for Google Maps API ---
 function initMap() {
@@ -10,6 +11,7 @@ function initMap() {
     }
 
     console.log("Google Maps API loaded successfully.");
+    geocoder = new google.maps.Geocoder(); // Initialize the geocoder
 
     const guyanaCenter = { lat: 6.8013, lng: -58.1551 }; 
 
@@ -50,24 +52,23 @@ function initMap() {
     const scheduleDropoffInput = document.getElementById('schedule-dropoff-address');
 
     const initAutocomplete = (inputElement, options) => {
-        if (inputElement && typeof google !== 'undefined') {
+        if (inputElement && typeof google !== 'undefined' && google.maps && google.maps.places) {
             const autocomplete = new google.maps.places.Autocomplete(inputElement, options);
             autocomplete.addListener('place_changed', () => {
                 const place = autocomplete.getPlace();
                 if (place && place.formatted_address) {
                     console.log(`${inputElement.id} Place Selected:`, place.formatted_address);
-                    // Trigger fare calculation update if it's the main booking form
                     if (inputElement.id === 'pickup-address' || inputElement.id === 'dropoff-address') {
                         updateFareEstimate();
                     }
                 } else {
                     console.log("Autocomplete selection cleared or invalid place.");
                      if (inputElement.id === 'pickup-address' || inputElement.id === 'dropoff-address') {
-                         document.getElementById('fare-estimate').textContent = ''; // Clear fare if address is invalid/cleared
+                         document.getElementById('fare-estimate').textContent = ''; 
                      }
                 }
             });
-            return autocomplete; // Return instance if needed elsewhere
+            return autocomplete; 
         } else {
             console.error(`Input field #${inputElement?.id} not found or Google Maps API not ready.`);
             return null;
@@ -85,10 +86,98 @@ function initMap() {
     }
 } 
 
+// --- Geolocation Function ---
+function getCurrentLocation(inputId, buttonElement) {
+    if (!navigator.geolocation) {
+        showConfirmation("Geolocation is not supported by your browser.", true);
+        return;
+    }
+
+    if (!geocoder) {
+        showConfirmation("Map services are still loading, please try again shortly.", true);
+        return;
+    }
+
+    const inputElement = document.getElementById(inputId);
+    if (!inputElement) {
+        console.error(`Input element with ID ${inputId} not found.`);
+        return;
+    }
+
+    // Provide visual feedback
+    const originalPlaceholder = inputElement.placeholder;
+    inputElement.placeholder = "Fetching location...";
+    if (buttonElement) buttonElement.disabled = true;
+
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const latLng = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            geocoder.geocode({ location: latLng }, (results, status) => {
+                inputElement.placeholder = originalPlaceholder; // Restore placeholder
+                if (buttonElement) buttonElement.disabled = false; // Re-enable button
+
+                if (status === "OK") {
+                    if (results[0]) {
+                        inputElement.value = results[0].formatted_address;
+                        console.log("Geocoded Address:", results[0].formatted_address);
+                        showConfirmation("Location set!", false);
+                        // Optionally center map
+                        if(map) {
+                            map.setCenter(latLng);
+                            map.setZoom(15); // Zoom in a bit
+                        }
+                        // Update fare if it's the main booking form pickup
+                        if (inputId === 'pickup-address') {
+                            updateFareEstimate();
+                        }
+                    } else {
+                        showConfirmation("No address found for your location.", true);
+                    }
+                } else {
+                    console.error("Geocoder failed due to: " + status);
+                    showConfirmation("Could not determine address from location.", true);
+                }
+            });
+        },
+        (error) => {
+            inputElement.placeholder = originalPlaceholder; // Restore placeholder
+            if (buttonElement) buttonElement.disabled = false; // Re-enable button
+            let errorMsg = "Error getting location: ";
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg += "Permission denied.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg += "Location information unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    errorMsg += "Request timed out.";
+                    break;
+                default:
+                    errorMsg += "An unknown error occurred.";
+                    break;
+            }
+            console.error(errorMsg, error);
+            showConfirmation(errorMsg, true);
+        },
+        {
+            enableHighAccuracy: true, // Try for better accuracy
+            timeout: 10000,         // Wait 10 seconds
+            maximumAge: 0           // Don't use cached position
+        }
+    );
+}
+
+
 // --- Helper Functions ---
 
 function calculateMockFare(vehicleType) {
-    const baseFare = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000; // Random base fare G$1000-G$5000
+    const baseFare = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000; 
     let multiplier = 1;
     if (vehicleType === 'suv') {
         multiplier = 1.5;
@@ -119,7 +208,7 @@ function showConfirmation(message, isError = false) {
     setTimeout(() => {
          confirmationMessage.classList.remove('show');
          confirmationMessage.classList.add('hide');
-    }, 3500); // Slightly longer display time
+    }, 3500); 
 }
 
 function openModal(modalId) {
@@ -173,7 +262,7 @@ function updateFareEstimate() {
     if (pickup && dropoff && selectedVehicleType && fareEstimateDiv) {
         fareEstimateDiv.textContent = calculateMockFare(selectedVehicleType.value);
     } else if (fareEstimateDiv) {
-        fareEstimateDiv.textContent = ''; // Clear if fields are empty
+        fareEstimateDiv.textContent = ''; 
     }
 }
 
@@ -198,6 +287,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelRideBtn = document.getElementById('cancel-ride-btn');
     const mapCanvas = document.getElementById('map-canvas');
     const vehicleTypeRadios = document.querySelectorAll('input[name="vehicleType"]');
+    const currentLocationBtnMain = document.getElementById('use-current-location-main');
+    const currentLocationBtnSchedule = document.getElementById('use-current-location-schedule');
+
 
     if (bookingForm) {
         bookingForm.addEventListener('submit', (e) => {
@@ -209,11 +301,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pickup && dropoff && vehicleType) {
                 console.log('Booking submitted:', { pickup, dropoff, vehicleType });
                 
-                // Simulate finding driver
                 if (bookingSection && rideStatusSection && mapCanvas) {
-                    bookingSection.classList.add('hidden'); // Hide form
-                    mapCanvas.classList.add('hidden'); // Hide map
-                    rideStatusSection.classList.remove('hidden'); // Show status
+                    bookingSection.classList.add('hidden'); 
+                    mapCanvas.classList.add('hidden'); 
+                    rideStatusSection.classList.remove('hidden'); 
 
                     document.getElementById('status-message').textContent = 'Searching for nearby drivers...';
                     document.getElementById('driver-name').textContent = '---';
@@ -221,40 +312,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('driver-vehicle').textContent = '---';
                     document.getElementById('driver-eta').textContent = '---';
 
-                    // Simulate finding a driver after a delay
                     setTimeout(() => {
                         document.getElementById('status-message').textContent = 'Driver En Route!';
                         document.getElementById('driver-name').textContent = 'Ahmed K.';
                         document.getElementById('driver-rating').textContent = '4.9';
                         document.getElementById('driver-vehicle').textContent = `Toyota Allion (${vehicleType})`;
-                        document.getElementById('driver-eta').textContent = `${Math.floor(Math.random() * 5) + 3}`; // Random ETA 3-7 mins
+                        document.getElementById('driver-eta').textContent = `${Math.floor(Math.random() * 5) + 3}`; 
                     }, 2500); 
                 } else {
-                     // Fallback if elements aren't found
                      showConfirmation(`Finding your ${vehicleType} ride from ${pickup} to ${dropoff}...`);
                 }
                 
-                // Don't reset the form immediately, user might want to cancel
-                // bookingForm.reset(); 
-                document.getElementById('fare-estimate').textContent = ''; // Clear fare estimate
+                document.getElementById('fare-estimate').textContent = ''; 
             } else {
                 showConfirmation('Please enter pickup, dropoff, and select vehicle type.', true); 
             }
         });
     }
     
-    // Update fare estimate when vehicle type changes
     if (vehicleTypeRadios) {
         vehicleTypeRadios.forEach(radio => {
             radio.addEventListener('change', updateFareEstimate);
         });
     }
     
-     // Add listeners to update fare when addresses change (after autocomplete selection)
-     // Note: This requires the autocomplete instances to be accessible. We ensure initMap runs first.
-     // We already added calls to updateFareEstimate within the place_changed listeners in initMap.
-
-
     if (scheduleForm) {
         scheduleForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -316,15 +397,26 @@ document.addEventListener('DOMContentLoaded', () => {
          });
      }
 
-     // Cancel Ride Button
-     if (cancelRideBtn && bookingSection && rideStatusSection && mapCanvas) {
+     if (cancelRideBtn && bookingSection && rideStatusSection && mapCanvas && bookingForm) {
          cancelRideBtn.addEventListener('click', () => {
-             rideStatusSection.classList.add('hidden'); // Hide status
-             bookingSection.classList.remove('hidden'); // Show form again
-             mapCanvas.classList.remove('hidden'); // Show map again
-             bookingForm.reset(); // Reset the form
-             document.getElementById('fare-estimate').textContent = ''; // Clear fare estimate
+             rideStatusSection.classList.add('hidden'); 
+             bookingSection.classList.remove('hidden'); 
+             mapCanvas.classList.remove('hidden'); 
+             bookingForm.reset(); 
+             document.getElementById('fare-estimate').textContent = ''; 
              showConfirmation('Ride cancelled.');
+         });
+     }
+
+     // Add listeners for the current location buttons
+     if(currentLocationBtnMain) {
+         currentLocationBtnMain.addEventListener('click', function() {
+             getCurrentLocation('pickup-address', this); // Pass input ID and the button itself
+         });
+     }
+     if(currentLocationBtnSchedule) {
+         currentLocationBtnSchedule.addEventListener('click', function() {
+             getCurrentLocation('schedule-pickup-address', this); // Pass input ID and the button itself
          });
      }
 
@@ -353,7 +445,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', checkFadeIn);
     window.addEventListener('load', checkFadeIn);
 
-}); // End DOMContentLoaded
+}); 
 
 // Make sure initMap is globally accessible
 window.initMap = initMap;
+
