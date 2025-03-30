@@ -467,10 +467,12 @@ function toggleOfflineAlert(isOffline) {
     }
 }
 
+// FIXED: Improved modal functions to fix the rewards button issue
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-        modal.style.display = 'flex'; 
+        // Set display to flex properly
+        modal.style.display = 'flex';
         document.body.style.overflow = 'hidden'; 
         
         // Add animation classes for smooth entry
@@ -478,6 +480,7 @@ function openModal(modalId) {
             const modalContent = modal.querySelector('.modal-content');
             if (modalContent) {
                 modalContent.classList.add('animate-slide-up');
+                modalContent.classList.remove('animate-slide-down'); // Remove slide down if it exists
             }
         }, 10);
         
@@ -630,6 +633,7 @@ function requestRide(formData) {
                 // Show driver card
                 if (driverCard) {
                     driverCard.classList.remove('hidden');
+                    driverCard.classList.add('show'); // Add the show class to trigger animation
                     document.getElementById('driver-card-name').textContent = 'John K.';
                     document.getElementById('driver-card-rating').textContent = '4.9';
                 }
@@ -1015,12 +1019,37 @@ function setupEventListeners() {
     const scheduleModalOverlay = document.getElementById('schedule-modal-overlay');
     
     if (accountModalOverlay) {
-        accountModalOverlay.addEventListener('click', () => closeModal('account-modal'));
+        accountModalOverlay.addEventListener('click', (e) => {
+            if (e.target === accountModalOverlay) {
+                closeModal('account-modal');
+            }
+        });
     }
     
     if (scheduleModalOverlay) {
-        scheduleModalOverlay.addEventListener('click', () => closeModal('schedule-modal'));
+        scheduleModalOverlay.addEventListener('click', (e) => {
+            if (e.target === scheduleModalOverlay) {
+                closeModal('schedule-modal');
+            }
+        });
     }
+    
+    // FIXED: Add click event listeners to modal close buttons
+    const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
+    modalCloseBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const modal = btn.closest('#account-modal') 
+                ? 'account-modal' 
+                : btn.closest('#schedule-modal') 
+                    ? 'schedule-modal' 
+                    : null;
+            
+            if (modal) {
+                closeModal(modal);
+            }
+        });
+    });
     
     // Cancel ride button
     const cancelRideBtn = document.getElementById('cancel-ride-btn');
@@ -1088,6 +1117,18 @@ function setupEventListeners() {
         });
     }
     
+    // Tab switching for login/signup
+    const loginTabBtn = document.getElementById('login-tab-btn');
+    const signupTabBtn = document.getElementById('signup-tab-btn');
+    
+    if (loginTabBtn) {
+        loginTabBtn.addEventListener('click', () => switchTab('login'));
+    }
+    
+    if (signupTabBtn) {
+        signupTabBtn.addEventListener('click', () => switchTab('signup'));
+    }
+    
     // Scroll animations for feature cards
     const observeElements = () => {
         const observer = new IntersectionObserver((entries) => {
@@ -1130,3 +1171,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Make initMap globally accessible for Google Maps callback
 window.initMap = initMap;
+
+// Make modal functions globally accessible
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.switchTab = switchTab;
