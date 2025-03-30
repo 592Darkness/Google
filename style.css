@@ -1,5 +1,6 @@
 @font-face {
   font-family: 'LucideIcons';
+  /* Updated URL to avoid potential 404s on specific versions */
   src: url(https://cdn.jsdelivr.net/npm/lucide-static@0.473.0/font/lucide.ttf) format('truetype');
 }
 
@@ -150,6 +151,9 @@ button:focus-visible, input:focus-visible, a:focus-visible {
    cursor: pointer;
    border-top: 1px solid #374151; /* gray-700 */
    transition: background-color 0.2s ease;
+   white-space: nowrap; 
+   overflow: hidden; 
+   text-overflow: ellipsis; 
 }
 
 .pac-item:first-child {
@@ -190,8 +194,9 @@ input[type="radio"].form-radio {
     border: 2px solid #6b7280; /* gray-500 */
     transition: all 0.2s ease-in-out;
     cursor: pointer;
-    position: relative; /* For positioning the inner dot */
-    margin-right: 0.5rem; /* Space between radio and label */
+    position: relative; 
+    margin-right: 0.5rem; 
+    flex-shrink: 0; /* Prevent radio from shrinking */
 }
 
 input[type="radio"].form-radio:checked {
@@ -213,30 +218,29 @@ input[type="radio"].form-radio:checked::after {
 }
 
 input[type="radio"].form-radio:focus {
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.5); /* primary-500 with opacity */
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.5); 
     outline: none;
 }
 
-/* Style the labels containing radios for better click area and visual feedback */
 label:has(input[type="radio"].form-radio) {
-    display: inline-flex; /* Use inline-flex for better alignment */
+    display: inline-flex; 
     align-items: center;
     padding: 0.5rem 1rem;
-    background-color: #374151; /* gray-700 */
+    background-color: #374151; 
     border-radius: 0.5rem;
-    border: 1px solid #4b5563; /* gray-600 */
+    border: 1px solid #4b5563; 
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 }
 
 label:has(input[type="radio"].form-radio):hover {
-    border-color: #6b7280; /* gray-500 */
-    background-color: #4b5563; /* gray-600 */
+    border-color: #6b7280; 
+    background-color: #4b5563; 
 }
 
 label:has(input[type="radio"].form-radio:checked) {
-    border-color: #10b981; /* primary-500 */
-    background-color: #065f46; /* primary-800 */
+    border-color: #10b981; 
+    background-color: #065f46; 
     color: white;
 }
 
@@ -247,6 +251,5 @@ button, a {
 
 /* Enhance feature card hover */
 #features .bg-gray-700\/50:hover {
-    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1), 0 4px 6px -2px rgba(16, 185, 129, 0.05); /* Subtle primary shadow */
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1), 0 4px 6px -2px rgba(16, 185, 129, 0.05); 
 }
-
