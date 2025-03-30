@@ -889,31 +889,3 @@ header.scrolled {
 .translate-y-full {
   transform: translateY(100%);
 }
-/* Add the missing animation class for slide-down */
-.animate-slide-down {
-  animation: slideDown 0.3s ease-in forwards;
-}
-
-/* Ensure modal display properties are correct */
-#account-modal.flex, #schedule-modal.flex {
-  display: flex;
-}
-
-/* Improve modal transition styles */
-.modal-content {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.modal-content.animate-slide-up {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Fix focus styles for modal close buttons */
-.modal-close-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
-  color: var(--color-primary-400);
-}
