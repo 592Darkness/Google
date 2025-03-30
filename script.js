@@ -17,6 +17,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Enhance geolocation button
     enhanceLocationButtons();
+    
+    // Add scroll down arrow
+    addScrollDownArrow();
+    
+    // Add Arabic font for Islamic text
+    addArabicFont();
+    
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    
+    // Add vehicle type tooltips
+    addVehicleTooltips();
+    
+    // Override existing form submissions
+    overrideFormSubmissions();
 });
 
 // Create and show Islamic greeting on first visit
@@ -195,6 +210,59 @@ function enhanceLocationButtons() {
     }
 }
 
+// Add scroll down arrow to first section
+function addScrollDownArrow() {
+    const firstSection = document.querySelector('section');
+    if (firstSection) {
+        const scrollArrow = document.createElement('div');
+        scrollArrow.className = 'scroll-down-arrow';
+        scrollArrow.innerHTML = '↓';
+        scrollArrow.title = 'Scroll down to explore';
+        firstSection.appendChild(scrollArrow);
+        
+        scrollArrow.addEventListener('click', () => {
+            const featuresSection = document.getElementById('features');
+            if (featuresSection) {
+                featuresSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+}
+
+// Add Arabic font for Islamic text
+function addArabicFont() {
+    const fontLink = document.createElement('link');
+    fontLink.rel = 'stylesheet';
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap';
+    document.head.appendChild(fontLink);
+}
+
+// Add tooltips to vehicle type options
+function addVehicleTooltips() {
+    const vehicleLabels = document.querySelectorAll('label:has(input[name="vehicleType"]), label:has(input[name="scheduleVehicleType"])');
+    
+    vehicleLabels.forEach(label => {
+        const vehicleType = label.querySelector('input').value;
+        let tooltipText = '';
+        
+        switch (vehicleType) {
+            case 'standard':
+                tooltipText = 'Affordable and comfortable sedan';
+                break;
+            case 'suv':
+                tooltipText = 'Spacious vehicle for groups or luggage';
+                break;
+            case 'premium':
+                tooltipText = 'Luxury experience with top-rated drivers';
+                break;
+        }
+        
+        if (tooltipText) {
+            label.setAttribute('title', tooltipText);
+        }
+    });
+}
+
 // Add loader animation for ride requests
 function showLoader(parentElement) {
     // Create loader
@@ -210,85 +278,162 @@ function showLoader(parentElement) {
     return loader;
 }
 
-// Override the original showConfirmation function to add Islamic styling
-const originalShowConfirmation = window.showConfirmation;
-window.showConfirmation = function(message, isError = false) {
-    const confirmationMessage = document.getElementById('confirmation-message');
-    const confirmationText = document.getElementById('confirmation-text');
-    if (!confirmationMessage || !confirmationText) return;
+// Override form submissions to add Islamic elements
+function overrideFormSubmissions() {
+    // Override the original showConfirmation function
+    window.originalShowConfirmation = window.showConfirmation;
+    window.showConfirmation = function(message, isError = false) {
+        const confirmationMessage = document.getElementById('confirmation-message');
+        const confirmationText = document.getElementById('confirmation-text');
+        if (!confirmationMessage || !confirmationText) return;
 
-    // Add Islamic symbol based on message type
-    const symbol = isError ? '⚠️' : '☪️';
-    confirmationText.innerHTML = `${symbol} ${message}`;
-    
-    confirmationMessage.classList.remove('hide');
-    confirmationMessage.classList.add('show');
-
-    if (isError) {
-        confirmationMessage.classList.remove('bg-green-600');
-        confirmationMessage.classList.add('bg-red-600');
-    } else {
-        confirmationMessage.classList.remove('bg-red-600');
-        confirmationMessage.classList.add('bg-green-600');
-    }
-
-    setTimeout(() => {
-        confirmationMessage.classList.remove('show');
-        confirmationMessage.classList.add('hide');
-    }, 3500);
-};
-
-// Override the booking form submission to show Islamic loader
-const originalBookingFormSubmit = document.getElementById('booking-form')?.onsubmit;
-if (document.getElementById('booking-form')) {
-    document.getElementById('booking-form').onsubmit = function(e) {
-        e.preventDefault();
+        // Add Islamic symbol based on message type
+        const symbol = isError ? '⚠️' : '☪️';
+        confirmationText.innerHTML = `${symbol} ${message}`;
         
-        const pickup = document.getElementById('pickup-address').value;
-        const dropoff = document.getElementById('dropoff-address').value;
-        const vehicleType = document.querySelector('input[name="vehicleType"]:checked')?.value;
+        confirmationMessage.classList.remove('hide');
+        confirmationMessage.classList.add('show');
 
-        if (pickup && dropoff && vehicleType) {
-            console.log('Booking submitted:', { pickup, dropoff, vehicleType });
+        if (isError) {
+            confirmationMessage.classList.remove('bg-green-600');
+            confirmationMessage.classList.add('bg-red-600');
+        } else {
+            confirmationMessage.classList.remove('bg-red-600');
+            confirmationMessage.classList.add('bg-green-600');
+        }
+
+        setTimeout(() => {
+            confirmationMessage.classList.remove('show');
+            confirmationMessage.classList.add('hide');
+        }, 3500);
+    };
+
+    // Override booking form submission
+    const bookingForm = document.getElementById('booking-form');
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            const bookingSection = document.getElementById('booking-section');
-            const rideStatusSection = document.getElementById('ride-status');
-            const mapCanvas = document.getElementById('map-canvas');
-            
-            if (bookingSection && rideStatusSection && mapCanvas) {
-                bookingSection.classList.add('hidden');
-                mapCanvas.classList.add('hidden');
+            const pickup = document.getElementById('pickup-address').value;
+            const dropoff = document.getElementById('dropoff-address').value;
+            const vehicleType = document.querySelector('input[name="vehicleType"]:checked')?.value;
+
+            if (pickup && dropoff && vehicleType) {
+                console.log('Booking submitted:', { pickup, dropoff, vehicleType });
                 
-                // Show loader before showing ride status
-                const statusMessage = document.getElementById('status-message');
-                showLoader(statusMessage.parentNode);
+                const bookingSection = document.getElementById('booking-section');
+                const rideStatusSection = document.getElementById('ride-status');
+                const mapCanvas = document.getElementById('map-canvas');
                 
-                // Show ride status after a short delay with animation
-                setTimeout(() => {
-                    rideStatusSection.classList.remove('hidden');
+                if (bookingSection && rideStatusSection && mapCanvas) {
+                    bookingSection.classList.add('hidden');
+                    mapCanvas.classList.add('hidden');
                     
-                    // Add Islamic greeting before showing driver info
-                    document.getElementById('status-message').textContent = 'Searching for drivers...';
+                    // Show loader before showing ride status
+                    rideStatusSection.classList.remove('hidden');
+                    const statusMessage = document.getElementById('status-message');
+                    if (statusMessage) {
+                        statusMessage.innerHTML = '<div class="crescent-loader"></div> Searching for drivers...';
+                    }
+                    
                     document.getElementById('driver-name').textContent = '---';
                     document.getElementById('driver-rating').textContent = '---';
                     document.getElementById('driver-vehicle').textContent = '---';
                     document.getElementById('driver-eta').textContent = '---';
 
+                    // Show ride status after a delay with animation
                     setTimeout(() => {
-                        document.getElementById('status-message').innerHTML = '<span style="color: var(--islamic-gold);">Alhamdulillah!</span> Driver En Route!';
+                        if (statusMessage) {
+                            statusMessage.innerHTML = '<span style="color: #f59e0b;">Alhamdulillah!</span> Driver En Route!';
+                        }
                         document.getElementById('driver-name').textContent = 'Mohammed A.';
                         document.getElementById('driver-rating').textContent = '4.9';
                         document.getElementById('driver-vehicle').textContent = `Toyota Allion (${vehicleType})`;
                         document.getElementById('driver-eta').textContent = `${Math.floor(Math.random() * 5) + 3}`;
                     }, 2500);
-                }, 1000);
+                } else {
+                    showConfirmation(`Finding your ${vehicleType} ride from ${pickup} to ${dropoff}...`);
+                }
+                
+                document.getElementById('fare-estimate').textContent = '';
             } else {
-                showConfirmation(`Finding your ${vehicleType} ride from ${pickup} to ${dropoff}...`);
+                showConfirmation('Please enter pickup, dropoff, and select vehicle type.', true);
             }
+        }, true); // Use capturing to override any existing handlers
+    }
+
+    // Override schedule form submission
+    const scheduleForm = document.getElementById('schedule-form');
+    if (scheduleForm) {
+        scheduleForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            document.getElementById('fare-estimate').textContent = '';
-        } else {
-            showConfirmation('Please enter pickup, dropoff, and select vehicle type.', true);
-        }
-    };
+            const pickup = document.getElementById('schedule-pickup-address').value;
+            const dropoff = document.getElementById('schedule-dropoff-address').value;
+            const date = document.getElementById('schedule-date').value;
+            const time = document.getElementById('schedule-time').value;
+            const vehicleType = document.querySelector('input[name="scheduleVehicleType"]:checked')?.value;
+            
+            if (pickup && dropoff && date && time && vehicleType) {
+                console.log('Scheduling submitted:', { pickup, dropoff, date, time, vehicleType });
+                
+                const formattedDate = new Date(date + 'T' + time).toLocaleString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                closeModal('schedule-modal');
+                showConfirmation(`الحمد لله! Ride scheduled for ${formattedDate}!`);
+                scheduleForm.reset();
+            } else {
+                showConfirmation('Please fill in all required fields for scheduling.', true);
+            }
+        }, true); // Use capturing to override any existing handlers
+    }
+
+    // Override login form submission
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            closeModal('account-modal');
+            showConfirmation('مرحبا! Welcome back to Salaam Rides!');
+            loginForm.reset();
+        }, true);
+    }
+
+    // Override signup form submission
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            closeModal('account-modal');
+            showConfirmation('As-salamu alaykum! Welcome to Salaam Rides!');
+            signupForm.reset();
+        }, true);
+    }
+
+    // Override cancel ride button
+    const cancelRideBtn = document.getElementById('cancel-ride-btn');
+    if (cancelRideBtn) {
+        cancelRideBtn.addEventListener('click', function() {
+            const rideStatusSection = document.getElementById('ride-status');
+            const bookingSection = document.getElementById('booking-section');
+            const mapCanvas = document.getElementById('map-canvas');
+            const bookingForm = document.getElementById('booking-form');
+            
+            if (rideStatusSection && bookingSection && mapCanvas && bookingForm) {
+                rideStatusSection.classList.add('hidden');
+                bookingSection.classList.remove('hidden');
+                mapCanvas.classList.remove('hidden');
+                bookingForm.reset();
+                document.getElementById('fare-estimate').textContent = '';
+                showConfirmation('في أمان الله (Fee Amanullah) - Ride cancelled.');
+            }
+        }, true);
+    }
 }
