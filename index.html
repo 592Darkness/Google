@@ -384,13 +384,13 @@
     <div id="account-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
         <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="account-modal-overlay"></div>
         <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700 max-w-md w-full mx-auto relative z-10">
-            <button class="modal-close-btn text-gray-500 hover:text-primary-400 absolute right-4 top-4 focus:outline-none focus:text-primary-500" aria-label="Close modal" onclick="closeModal('account-modal')">
+            <button type="button" class="modal-close-btn text-gray-500 hover:text-primary-400 absolute right-4 top-4 focus:outline-none focus:text-primary-500" aria-label="Close modal">
                 <span class="lucide" aria-hidden="true">&#xea76;</span>
             </button>
             <h2 class="text-2xl font-semibold text-white mb-6 text-center">Welcome to Salaam Rides</h2>
             <div class="flex border-b border-gray-600 mb-6">
-                <button id="login-tab-btn" class="flex-1 py-2 text-center font-medium text-primary-400 border-b-2 border-primary-400 transition-colors" aria-selected="true" role="tab" onclick="switchTab('login')">Login</button>
-                <button id="signup-tab-btn" class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300 transition-colors" aria-selected="false" role="tab" onclick="switchTab('signup')">Sign Up</button>
+                <button type="button" id="login-tab-btn" class="flex-1 py-2 text-center font-medium text-primary-400 border-b-2 border-primary-400 transition-colors" aria-selected="true" role="tab">Login</button>
+                <button type="button" id="signup-tab-btn" class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300 transition-colors" aria-selected="false" role="tab">Sign Up</button>
             </div>
             <!-- Login Form -->
             <form id="login-form" class="space-y-4" role="tabpanel" aria-labelledby="login-tab-btn">
@@ -450,7 +450,7 @@
     <div id="schedule-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
         <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="schedule-modal-overlay"></div>
         <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700 max-w-lg w-full mx-auto relative z-10">
-            <button class="modal-close-btn text-gray-500 hover:text-primary-400 absolute right-4 top-4 focus:outline-none focus:text-primary-500" aria-label="Close modal" onclick="closeModal('schedule-modal')">
+            <button type="button" class="modal-close-btn text-gray-500 hover:text-primary-400 absolute right-4 top-4 focus:outline-none focus:text-primary-500" aria-label="Close modal">
                 <span class="lucide" aria-hidden="true">&#xea76;</span>
             </button>
             <h2 class="text-2xl font-semibold text-white mb-6 text-center">Schedule Your Ride</h2>
