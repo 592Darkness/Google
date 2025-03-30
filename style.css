@@ -78,6 +78,12 @@
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;
   --radius-full: 9999px;
+  
+  /* Z-index layers */
+  --z-header: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+  --z-loader: 70;
 }
 
 /* Reset and Base Styles */
@@ -105,6 +111,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  padding-top: 0; /* No padding needed since we have a spacer div */
 }
 
 /* Typography */
@@ -402,15 +409,25 @@ label:has(input[type="radio"].form-radio:checked) {
 
 /* ===== Layout Components ===== */
 
-/* Header & Navigation */
+/* Header & Navigation - FIXED version */
 header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 40;
-  background-color: rgba(17, 24, 39, 0.8);
+  left: 0;
+  right: 0;
+  z-index: var(--z-header);
+  background-color: rgba(17, 24, 39, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: all var(--duration-normal) ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  height: 4rem; /* Fixed height for the header */
+}
+
+header nav {
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 header.scrolled {
@@ -485,7 +502,7 @@ header.scrolled {
 #account-modal, #schedule-modal {
   display: none; 
   position: fixed;
-  z-index: 50;
+  z-index: var(--z-modal);
   left: 0;
   top: 0;
   width: 100%;
@@ -577,7 +594,7 @@ header.scrolled {
   background-color: var(--color-primary-500);
   color: white;
   box-shadow: var(--shadow-lg);
-  z-index: 100;
+  z-index: var(--z-toast);
   transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
@@ -616,7 +633,7 @@ header.scrolled {
   background-color: rgba(17, 24, 39, 0.8);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 100;
+  z-index: var(--z-loader);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -792,6 +809,11 @@ header.scrolled {
   .feature-card {
     padding: 1.5rem !important;
   }
+  
+  /* Adjust header height on mobile */
+  header {
+    height: 3.5rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -802,6 +824,11 @@ header.scrolled {
   
   #map-canvas {
     height: 350px;
+  }
+  
+  /* Adjust header height on larger screens */
+  header {
+    height: 4.5rem;
   }
 }
 
