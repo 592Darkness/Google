@@ -87,50 +87,47 @@
         <img src="islamic-pattern.svg" alt="" class="w-full h-full object-cover" aria-hidden="true">
     </div>
 
-   <!-- Fixed Header with Navigation -->
-<header class="bg-gray-900/95 backdrop-blur-md fixed top-0 left-0 right-0 z-40 border-b border-gray-700/50 shadow-md">
-  <div class="container mx-auto px-4 lg:px-6 flex justify-between items-center h-16">
-    <!-- Logo - Keep this part -->
-    <a href="#" class="text-2xl font-bold text-primary-400 hover:text-primary-300 transition-colors flex items-center" aria-label="Salaam Rides Guyana Home">
-      Salaam Rides <span class="text-xs font-normal text-gray-400 ml-1">Guyana</span>
-    </a>
-    
-    <!-- Desktop Navigation - This needs to be visible -->
-    <div class="hidden md:flex items-center space-x-6">
-      <a href="#features" class="text-gray-300 hover:text-primary-400 transition duration-300">Features</a>
-      <a href="#rewards" class="text-gray-300 hover:text-primary-400 transition duration-300">Rewards</a>
-      <a href="#" id="schedule-ride-nav" class="text-gray-300 hover:text-primary-400 transition duration-300">Schedule Ride</a>
-      <button id="login-signup-btn" class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
-        Login / Sign Up
-      </button>
-    </div>
-    
-    <!-- Mobile Menu Button -->
-    <div class="md:hidden">
-      <button id="mobile-menu-btn" class="text-gray-300 hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md p-1" aria-label="Toggle mobile menu" aria-expanded="false">
-        <span class="lucide text-3xl">&#xe9b2;</span>
-      </button>
-    </div>
-  </div>
-  
-  <!-- Mobile Menu Dropdown -->
-  <div id="mobile-menu" class="hidden md:hidden bg-gray-800/95 backdrop-blur-md border-b border-gray-700/50 shadow-lg">
-    <div class="container mx-auto px-4 py-3 space-y-3">
-      <a href="#features" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Features</a>
-      <a href="#rewards" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Rewards</a>
-      <a href="#" id="schedule-ride-nav-mobile" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Schedule Ride</a>
-      <button id="login-signup-btn-mobile" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105 mt-2">
-        Login / Sign Up
-      </button>
-    </div>
-  </div>
-</header>
-
-<!-- Add this spacer to prevent content from being hidden under fixed header -->
-<div class="h-16 md:h-16"></div>
+    <!-- Fixed Header with Navigation -->
+    <header class="bg-gray-900/95 backdrop-blur-md fixed top-0 left-0 right-0 z-40 border-b border-gray-700/50 shadow-md">
+      <div class="container mx-auto px-4 lg:px-6 flex justify-between items-center h-16">
+        <!-- Logo -->
+        <a href="#" class="text-2xl font-bold text-primary-400 hover:text-primary-300 transition-colors flex items-center" aria-label="Salaam Rides Guyana Home">
+          Salaam Rides <span class="text-xs font-normal text-gray-400 ml-1">Guyana</span>
+        </a>
+        
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="#features" class="text-gray-300 hover:text-primary-400 transition duration-300">Features</a>
+          <a href="#rewards" class="text-gray-300 hover:text-primary-400 transition duration-300">Rewards</a>
+          <a href="#" id="schedule-ride-nav" class="text-gray-300 hover:text-primary-400 transition duration-300">Schedule Ride</a>
+          <button id="login-signup-btn" class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
+            Login / Sign Up
+          </button>
+        </div>
+        
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+          <button id="mobile-menu-btn" class="text-gray-300 hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md p-1" aria-label="Toggle mobile menu" aria-expanded="false">
+            <span class="lucide text-3xl">&#xe9b2;</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu Dropdown -->
+      <div id="mobile-menu" class="hidden md:hidden bg-gray-800/95 backdrop-blur-md border-b border-gray-700/50 shadow-lg">
+        <div class="container mx-auto px-4 py-3 space-y-3">
+          <a href="#features" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Features</a>
+          <a href="#rewards" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Rewards</a>
+          <a href="#" id="schedule-ride-nav-mobile" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Schedule Ride</a>
+          <button id="login-signup-btn-mobile" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105 mt-2">
+            Login / Sign Up
+          </button>
+        </div>
+      </div>
+    </header>
 
     <!-- Spacer to prevent content from being hidden under fixed header -->
-    <div class="h-16 md:h-20"></div>
+    <div class="h-16 md:h-16"></div>
 
     <!-- Hero Section with Booking Form -->
     <section class="relative min-h-[600px] flex items-center justify-center text-center px-4 py-10 md:py-16 overflow-hidden">
