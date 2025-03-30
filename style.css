@@ -1,206 +1,78 @@
-/* Islamic Patterns and Design Elements */
-:root {
-  --islamic-green: #10b981;
-  --islamic-gold: #f59e0b;
-  --islamic-blue: #0369a1;
-  --islamic-dark: #1f2937;
-  --islamic-pattern-opacity: 0.05;
+@font-face {
+  font-family: 'LucideIcons';
+  src: url(https://cdn.jsdelivr.net/npm/lucide-static@0.473.0/font/lucide.ttf) format('truetype');
 }
 
-/* Islamic geometric pattern background for main sections */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%2310b981' fill-opacity='0.05' d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'%3E%3C/path%3E%3C/svg%3E");
-  background-position: center;
-  background-repeat: repeat;
-  z-index: -1;
-  opacity: var(--islamic-pattern-opacity);
+/* Apply base styles and ensure proper box-sizing */
+html {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
-/* Dome-style border elements */
-.dome-border {
-  position: relative;
-  overflow: hidden;
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
-.dome-border::before,
-.dome-border::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 20px;
-  border-radius: 50% 50% 0 0;
-  background-color: var(--islamic-green);
-  opacity: 0.2;
+body {
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  background-color: #111827;
+  color: #e5e7eb;
 }
 
-.dome-border::before {
-  top: -10px;
-}
-
-.dome-border::after {
-  bottom: -10px;
-  border-radius: 0 0 50% 50%;
-}
-
-/* Islamic ornate decorative divider */
-.islamic-divider {
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--islamic-gold), transparent);
-  position: relative;
-  margin: 2rem auto;
-  width: 80%;
-}
-
-.islamic-divider::before {
-  content: "۝";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--islamic-gold);
-  background-color: var(--islamic-dark);
-  padding: 0 1rem;
-  font-size: 1.2rem;
-}
-
-/* Enhanced Animations */
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 5px var(--islamic-green), 0 0 10px var(--islamic-green);
-  }
-  50% {
-    box-shadow: 0 0 15px var(--islamic-green), 0 0 20px var(--islamic-green);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -100% 0;
-  }
-  100% {
-    background-position: 100% 0;
-  }
-}
-
-@keyframes minaret-float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-/* Apply enhanced animations to existing elements */
-.fade-in {
-  animation: fadeSlideUp 0.8s ease-out forwards;
-  opacity: 0;
-}
-
-/* Add subtle floating animation to icons */
 .lucide {
-  animation: minaret-float 3s ease-in-out infinite;
-  display: inline-block;
+  font-family: 'LucideIcons';
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block; 
+  vertical-align: middle; 
 }
 
-/* Enhance the logo with an Islamic-style glow effect */
-nav a.text-2xl {
-  position: relative;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+p, h1, h2, h3, h4, h5, h6, span, label, button, a, li, input, textarea {
+  overflow-wrap: break-word; 
+  word-wrap: break-word; 
+  -webkit-hyphens: auto; 
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="time"], textarea {
+  width: 100%;
+  padding: 12px;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  color: #e5e7eb;
+  font-size: 16px;
   transition: all 0.3s ease;
 }
 
-nav a.text-2xl:hover {
-  animation: glow 2s infinite;
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
-nav a.text-2xl::after {
-  content: "☪";
-  margin-left: 8px;
-  font-size: 1rem;
-  color: var(--islamic-gold);
-  opacity: 0.8;
-  vertical-align: super;
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+  opacity: 0;
 }
 
-/* Enhanced Islamic-style button with decorative elements */
-button[type="submit"] {
-  position: relative;
-  overflow: hidden;
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
-button[type="submit"]::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
-  transition: 0.5s;
-}
-
-button[type="submit"]:hover::before {
-  left: 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-/* Add an Islamic arch to section headers */
-section h2 {
-  position: relative;
-  padding-top: 2rem;
-}
-
-section h2::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50px;
-  height: 25px;
-  border-radius: 50% 50% 0 0;
-  border-top: 3px solid var(--islamic-gold);
-  border-left: 3px solid var(--islamic-gold);
-  border-right: 3px solid var(--islamic-gold);
-  opacity: 0.4;
-}
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
 
 /* Enhanced location button style */
 #use-current-location-main, 
@@ -209,352 +81,383 @@ section h2::before {
   border-radius: 50%;
   padding: 6px;
   border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--islamic-green) !important;
-  animation: glow 3s infinite alternate;
+  color: #10b981;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 #use-current-location-main:hover,
 #use-current-location-schedule:hover {
   background-color: rgba(16, 185, 129, 0.4);
-  transform: translateY(-1px) scale(1.1) !important;
+  transform: translateY(-50%) scale(1.1);
 }
 
-/* Add scroll animation to all sections */
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.8s ease;
-}
-
-.scroll-reveal.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Islamic prayer time reminder subtle notification */
-.prayer-time-reminder {
+/* Confirmation Message */
+#confirmation-message {
   position: fixed;
   bottom: 20px;
-  right: 20px;
-  background-color: rgba(31, 41, 55, 0.9);
-  border-radius: 12px;
-  padding: 12px 16px;
-  border-left: 4px solid var(--islamic-green);
-  color: white;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  z-index: 50;
-  transform: translateX(200%);
-  transition: transform 0.5s ease;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  opacity: 0;
+  pointer-events: none; 
+  z-index: 100; 
 }
 
-.prayer-time-reminder.show {
-  transform: translateX(0);
+#confirmation-message.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto; 
 }
 
-.prayer-time-reminder .icon {
-  color: var(--islamic-gold);
-  margin-right: 8px;
+#confirmation-message.hide {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px); 
 }
 
-/* Custom scrollbar with Islamic color theme */
-::-webkit-scrollbar {
-  width: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1f2937;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--islamic-green);
-  border-radius: 6px;
-  border: 3px solid #1f2937;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #047857;
-}
-
-/* Crescent-moon loader for transitions */
-.crescent-loader {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  position: relative;
-  animation: rotate 1.5s linear infinite;
-}
-
-.crescent-loader::before {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  inset: 0px;
-  border-radius: 50%;
-  border: 3px solid var(--islamic-gold);
-  animation: prixClipFix 2s linear infinite;
-}
-
-@keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes prixClipFix {
-  0% { clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0); }
-  25% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0); }
-  50% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%); }
-  75% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%); }
-  100% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0); }
-}
-
-/* Islamic-themed greeting message */
-.salam-greeting {
+/* Modals */
+#account-modal, #schedule-modal {
+  display: none; 
   position: fixed;
-  top: 0;
+  z-index: 50;
   left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(17, 24, 39, 0.95);
-  z-index: 9999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
+  overflow: auto; 
+  background-color: rgba(0, 0, 0, 0.7); 
+  backdrop-filter: blur(8px); 
 }
 
-.salam-greeting.show {
-  opacity: 1;
-  pointer-events: auto;
+.modal-content {
+  position: relative;
+  margin: 10% auto; 
+  padding: 30px;
+  width: 90%;
+  max-width: 500px; 
+  border-radius: 1rem; 
+  background-color: #1f2937;
+  border: 1px solid #374151;
 }
 
-.salam-greeting-content {
-  text-align: center;
-  animation: fadeSlideUp 1s forwards;
-}
-
-.salam-greeting-content h1 {
-  font-size: 2.5rem;
-  color: var(--islamic-gold);
-  margin-bottom: 1rem;
-}
-
-.salam-greeting-content p {
-  font-size: 1.2rem;
-  color: white;
-  margin-bottom: 2rem;
-}
-
-.salam-greeting-content .arabic-text {
-  font-size: 2rem;
-  color: var(--islamic-green);
-  margin-bottom: 1rem;
-  font-family: 'Amiri', serif;
-  direction: rtl;
-}
-
-.salam-greeting-content button {
-  background-color: var(--islamic-green);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.salam-greeting-content button:hover {
-  background-color: #047857;
-  transform: translateY(-2px);
-}
-
-/* Prayer compass direction indicator */
-.qibla-compass {
-  position: fixed;
-  bottom: 70px;
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
   right: 20px;
-  width: 40px;
-  height: 40px;
-  background-color: rgba(31, 41, 55, 0.8);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-size: 1.8rem;
+  font-weight: bold;
   cursor: pointer;
-  z-index: 50;
-  border: 2px solid var(--islamic-gold);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
-.qibla-compass:hover {
+.modal-close-btn:hover {
+  color: #10b981; 
   transform: scale(1.1);
 }
 
-.qibla-compass-needle {
-  width: 6px;
-  height: 18px;
-  background: linear-gradient(to bottom, var(--islamic-gold) 50%, var(--islamic-green) 50%);
-  border-radius: 6px;
-  transform-origin: center;
-  transform: rotate(0deg);
-  transition: transform 1s ease;
+/* Focus Styles */
+button:focus-visible, input:focus-visible, a:focus-visible {
+  outline: 2px solid #10b981; 
+  outline-offset: 2px;
 }
 
-/* Add tooltip styles for location buttons */
-[data-tooltip] {
-  position: relative;
+/* Google Maps Autocomplete */
+.pac-container {
+   background-color: #1f2937; 
+   border-radius: 0.5rem;
+   border: 1px solid #4b5563; 
+   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+   z-index: 1000 !important; 
+   font-family: 'Inter', sans-serif;
 }
 
-[data-tooltip]:before {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  right: 0;
-  background-color: rgba(31, 41, 55, 0.95);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 100;
-  pointer-events: none;
-  border: 1px solid var(--islamic-green);
+.pac-item {
+   padding: 0.75rem 1rem;
+   font-size: 0.875rem;
+   color: #d1d5db; 
+   cursor: pointer;
+   border-top: 1px solid #374151; 
+   transition: background-color 0.2s ease;
+   white-space: nowrap; 
+   overflow: hidden; 
+   text-overflow: ellipsis; 
 }
 
-[data-tooltip]:hover:before {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(-5px);
+.pac-item:first-child {
+   border-top: none;
 }
 
-/* Add Islamic decorative elements to the inputs */
-input[type="text"], 
-input[type="email"], 
-input[type="password"], 
-input[type="date"], 
-input[type="time"], 
-textarea {
-  transition: all 0.3s ease;
+.pac-item:hover {
+   background-color: #374151; 
 }
 
-input[type="text"]:focus, 
-input[type="email"]:focus, 
-input[type="password"]:focus, 
-input[type="date"]:focus, 
-input[type="time"]:focus, 
-textarea:focus {
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15), 0 0 0 1px var(--islamic-green) !important;
-  border-color: var(--islamic-green) !important;
+.pac-item-query {
+   font-weight: 600;
+   color: #f9fafb; 
 }
 
-/* Enhanced animation for button press */
-button:active {
-  transform: scale(0.95);
+.pac-matched {
+   font-weight: 700;
+   color: #34d399; 
 }
 
-/* Add animation for the driver arriving */
-@keyframes driverArriving {
-  0% { transform: translateX(-50px); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
+/* Map Container */
+#map-canvas {
+    height: 300px; 
+    width: 100%;
+    border-radius: 0.5rem; 
+    margin-top: 1.5rem; 
+    background-color: #374151; 
+    border: 1px solid #4b5563;
 }
 
-#driver-name, #driver-rating, #driver-vehicle, #driver-eta {
-  animation: driverArriving 0.5s ease forwards;
+/* Vehicle Type Radio Button Enhancement */
+input[type="radio"].form-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 50%;
+    border: 2px solid #6b7280; 
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    position: relative; 
+    margin-right: 0.5rem; 
+    flex-shrink: 0; 
 }
 
-/* Add decorative borders to status panel */
-#ride-status {
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  position: relative;
+input[type="radio"].form-radio:checked {
+    border-color: #10b981; 
+    background-color: #10b981; 
 }
 
-#ride-status::before {
-  content: "☪";
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #1f2937;
-  color: var(--islamic-gold);
-  padding: 0 10px;
-  font-size: 18px;
-}
-
-/* Custom styling for radio buttons with Islamic theme */
 input[type="radio"].form-radio:checked::after {
-  background-color: var(--islamic-gold);
+    content: '';
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-/* Add an animated arrow down on the first screen to encourage scrolling */
-.scroll-down-arrow {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: bounceArrow 2s infinite;
-  cursor: pointer;
-  color: var(--islamic-green);
-  font-size: 2rem;
-  opacity: 0.7;
+input[type="radio"].form-radio:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.5); 
+    outline: none;
 }
 
-@keyframes bounceArrow {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
-  40% { transform: translateY(-10px) translateX(-50%); }
-  60% { transform: translateY(-5px) translateX(-50%); }
+label:has(input[type="radio"].form-radio) {
+    display: inline-flex; 
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #374151; 
+    border-radius: 0.5rem;
+    border: 1px solid #4b5563; 
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
-/* Add pulsing effect to "Request Ride" button */
-button[type="submit"] {
-  position: relative;
+label:has(input[type="radio"].form-radio):hover {
+    border-color: #6b7280; 
+    background-color: #4b5563; 
 }
 
-button[type="submit"]::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: var(--islamic-green);
-  border-radius: 0.5rem;
-  z-index: -1;
-  opacity: 0.3;
-  transform: scale(1);
-  animation: pulse-button 2s infinite;
+label:has(input[type="radio"].form-radio:checked) {
+    border-color: #10b981; 
+    background-color: #065f46; 
+    color: white;
 }
 
-@keyframes pulse-button {
-  0% { transform: scale(1); opacity: 0.3; }
-  50% { transform: scale(1.05); opacity: 0.2; }
-  100% { transform: scale(1); opacity: 0.3; }
+/* Add subtle transitions to buttons and links */
+button, a {
+    transition: all 0.2s ease-in-out;
 }
 
-/* Add font for Arabic text */
-@font-face {
-  font-family: 'Amiri';
-  src: url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+/* Fixed Schedule Form Styles */
+.schedule-ride-container {
+    background-color: #1e293b;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 800px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Add Islamic decoration to footer */
-footer {
-  position: relative;
-  overflow: hidden;
+.schedule-ride-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    color: #f3f4f6;
 }
 
-footer::before {
-  content: "";
-  position: absolute;
-  top: -20px;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background-image: repeating-linear-gradient(135deg, var(--islamic-gold) 0, var(--islamic-gold) 10px, transparent 10px, transparent 20px);
-  opacity: 0.1;
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #d1d5db;
+}
+
+.input-group {
+    position: relative;
+}
+
+.location-button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(16, 185, 129, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #10b981;
+    transition: all 0.2s ease;
+}
+
+.location-button:hover {
+    background-color: rgba(16, 185, 129, 0.4);
+}
+
+.location-button i {
+    font-size: 18px;
+}
+
+.vehicle-options {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.vehicle-option {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    background-color: #374151;
+    border-radius: 8px;
+    border: 1px solid #4b5563;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vehicle-option:hover {
+    background-color: #4b5563;
+}
+
+.vehicle-option.selected {
+    background-color: #065f46;
+    border-color: #10b981;
+}
+
+.date-time-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.schedule-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+}
+
+.schedule-button:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+}
+
+.schedule-button:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .vehicle-options {
+        flex-direction: column;
+    }
+    
+    .date-time-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Custom styling for date and time inputs */
+input[type="date"], input[type="time"] {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 40px; /* Space for the calendar/clock icon */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310b981'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+}
+
+input[type="time"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310b981'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E");
+}
+
+/* Fixed position location button */
+.location-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(16, 185, 129, 0.15);
+    border-radius: 50%;
+    color: #10b981;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.location-icon:hover {
+    background-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Fixed header and navigation */
+header {
+    background-color: rgba(17, 24, 39, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
