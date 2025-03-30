@@ -6,6 +6,7 @@
 /* Apply base styles and ensure proper box-sizing */
 html {
   box-sizing: border-box;
+  scroll-behavior: smooth; /* Add smooth scrolling */
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -28,21 +29,19 @@ body {
   vertical-align: middle; 
 }
 
-/* Add word wrapping to prevent text cutoff in various elements */
 p, h1, h2, h3, h4, h5, h6, span, label, button, a, li, input, textarea {
-  overflow-wrap: break-word; /* Break long words to prevent overflow */
-  word-wrap: break-word; /* Legacy support */
-  -webkit-hyphens: auto; /* Optional: Add hyphens for better breaks */
+  overflow-wrap: break-word; 
+  word-wrap: break-word; 
+  -webkit-hyphens: auto; 
   -moz-hyphens: auto;
   hyphens: auto;
 }
 
-/* Ensure input fields don't cause overflow */
 input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="time"], textarea {
-    width: 100%; /* Ensure inputs don't exceed container width */
+    width: 100%; 
 }
 
-
+/* Animations */
 .fade-in {
   animation: fadeIn 0.8s ease-out forwards;
   opacity: 0;
@@ -67,6 +66,7 @@ input[type="text"], input[type="email"], input[type="password"], input[type="dat
   50% { opacity: 0.8; transform: scale(1.05); }
 }
 
+/* Confirmation Message */
 #confirmation-message {
   position: fixed;
   bottom: 20px;
@@ -89,6 +89,7 @@ input[type="text"], input[type="email"], input[type="password"], input[type="dat
   transform: translateX(-50%) translateY(20px); 
 }
 
+/* Modals */
 #account-modal, #schedule-modal {
   display: none; 
   position: fixed;
@@ -97,9 +98,9 @@ input[type="text"], input[type="email"], input[type="password"], input[type="dat
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto; /* Allow modal itself to scroll if content is too tall */
-  background-color: rgba(0, 0, 0, 0.6); 
-  backdrop-filter: blur(5px); 
+  overflow: auto; 
+  background-color: rgba(0, 0, 0, 0.7); /* Slightly darker backdrop */
+  backdrop-filter: blur(8px); 
 }
 
 .modal-content {
@@ -118,24 +119,26 @@ input[type="text"], input[type="email"], input[type="password"], input[type="dat
   font-size: 1.8rem;
   font-weight: bold;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .modal-close-btn:hover {
   color: #4ade80; 
+  transform: scale(1.1);
 }
 
+/* Focus Styles */
 button:focus-visible, input:focus-visible, a:focus-visible {
   outline: 2px solid #4ade80; 
   outline-offset: 2px;
 }
 
-/* Google Maps Autocomplete dropdown styling */
+/* Google Maps Autocomplete */
 .pac-container {
-   background-color: #2d3748; 
+   background-color: #1f2937; /* Darker gray */
    border-radius: 0.5rem;
-   border: 1px solid #4a5568; 
-   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+   border: 1px solid #4b5563; /* gray-600 */
+   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
    z-index: 1000 !important; 
    font-family: 'Inter', sans-serif;
 }
@@ -143,12 +146,10 @@ button:focus-visible, input:focus-visible, a:focus-visible {
 .pac-item {
    padding: 0.75rem 1rem;
    font-size: 0.875rem;
-   color: #e2e8f0; 
+   color: #d1d5db; /* gray-300 */
    cursor: pointer;
-   border-top: 1px solid #4a5568; 
-   white-space: nowrap; /* Prevent wrapping within an item */
-   overflow: hidden; /* Hide overflow within an item */
-   text-overflow: ellipsis; /* Show ellipsis (...) if text is too long */
+   border-top: 1px solid #374151; /* gray-700 */
+   transition: background-color 0.2s ease;
 }
 
 .pac-item:first-child {
@@ -156,24 +157,96 @@ button:focus-visible, input:focus-visible, a:focus-visible {
 }
 
 .pac-item:hover {
-   background-color: #4a5568; 
+   background-color: #374151; /* gray-700 */
 }
 
 .pac-item-query {
    font-weight: 600;
-   color: #f7fafc; 
+   color: #f9fafb; /* gray-100 */
 }
 
 .pac-matched {
    font-weight: 700;
-   color: #6ee7b7; 
+   color: #34d399; /* primary-400 */
 }
 
-/* Style for the map container */
+/* Map Container */
 #map-canvas {
     height: 300px; 
     width: 100%;
     border-radius: 0.5rem; 
     margin-top: 1.5rem; 
-    background-color: #4a5568; 
+    background-color: #374151; /* Slightly lighter placeholder */
+    border: 1px solid #4b5563;
 }
+
+/* Vehicle Type Radio Button Enhancement */
+input[type="radio"].form-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 50%;
+    border: 2px solid #6b7280; /* gray-500 */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    position: relative; /* For positioning the inner dot */
+    margin-right: 0.5rem; /* Space between radio and label */
+}
+
+input[type="radio"].form-radio:checked {
+    border-color: #10b981; /* primary-500 */
+    background-color: #10b981; /* primary-500 */
+}
+
+input[type="radio"].form-radio:checked::after {
+    content: '';
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input[type="radio"].form-radio:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.5); /* primary-500 with opacity */
+    outline: none;
+}
+
+/* Style the labels containing radios for better click area and visual feedback */
+label:has(input[type="radio"].form-radio) {
+    display: inline-flex; /* Use inline-flex for better alignment */
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #374151; /* gray-700 */
+    border-radius: 0.5rem;
+    border: 1px solid #4b5563; /* gray-600 */
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+label:has(input[type="radio"].form-radio):hover {
+    border-color: #6b7280; /* gray-500 */
+    background-color: #4b5563; /* gray-600 */
+}
+
+label:has(input[type="radio"].form-radio:checked) {
+    border-color: #10b981; /* primary-500 */
+    background-color: #065f46; /* primary-800 */
+    color: white;
+}
+
+/* Add subtle transitions to buttons and links */
+button, a {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Enhance feature card hover */
+#features .bg-gray-700\/50:hover {
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1), 0 4px 6px -2px rgba(16, 185, 129, 0.05); /* Subtle primary shadow */
+}
+
