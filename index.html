@@ -65,8 +65,7 @@
             </div>
             <div class="md:hidden">
                 <button class="text-gray-300 hover:text-primary-400 focus:outline-none">
-                    <span class="lucide text-3xl">&#xe9b2;</span> 
-                </button>
+                    <span class="lucide text-3xl">&#xe9b2;</span> </button>
             </div>
         </nav>
     </header>
@@ -94,16 +93,13 @@
                 <form id="booking-form" class="bg-gray-800/80 backdrop-blur-sm p-6 md:p-8 rounded-xl shadow-xl mb-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div class="relative">
-                             <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4b;</span> 
-                             <input type="text" id="pickup-address" name="pickup" placeholder="Enter Pickup Location" required
+                             <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4b;</span> <input type="text" id="pickup-address" name="pickup" placeholder="Enter Pickup Location" required
                                    class="w-full pl-10 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
                              <button type="button" id="use-current-location-main" title="Use Current Location" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20">
-                                 <span class="lucide text-xl">&#xe9cd;</span> 
-                             </button>
+                                 <span class="lucide text-xl">&#xe9cd;</span> </button>
                         </div>
                         <div class="relative">
-                             <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4a;</span> 
-                             <input type="text" id="dropoff-address" name="dropoff" placeholder="Enter Dropoff Location" required
+                             <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl z-10">&#xea4a;</span> <input type="text" id="dropoff-address" name="dropoff" placeholder="Enter Dropoff Location" required
                                    class="w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
                         </div>
                     </div>
@@ -126,16 +122,14 @@
                     </div>
                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                          <div class="relative md:col-span-1">
-                            <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">&#xeab2;</span> 
-                            <input type="text" id="promo-code" name="promo" placeholder="Promo Code"
+                            <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">&#xeab2;</span> <input type="text" id="promo-code" name="promo" placeholder="Promo Code"
                                    class="w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
                          </div>
                          <div id="fare-estimate" class="md:col-span-1 flex items-center justify-center text-gray-300 text-lg font-medium">
                             
                          </div>
                          <button type="submit" class="w-full md:col-span-1 bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg flex items-center justify-center space-x-2 transform hover:scale-105">
-                            <span class="lucide text-xl">&#xeb15;</span> 
-                            <span>Request Ride</span>
+                            <span class="lucide text-xl">&#xeb15;</span> <span>Request Ride</span>
                         </button>
                     </div>
                     <div class="text-center mt-4">
@@ -149,8 +143,7 @@
             <div id="ride-status" class="hidden mt-6 bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-xl text-left fade-in">
                  <h3 class="text-xl font-semibold text-white mb-3 text-center">Booking Confirmed!</h3>
                  <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Status:</span> <span id="status-message">Searching for driver...</span></p>
-                 <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Driver:</span> <span id="driver-name">---</span> (<span id="driver-rating">---</span> <span class="lucide text-yellow-400 text-sm">&#xeae5;</span>)</p>
-                 <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Vehicle:</span> <span id="driver-vehicle">---</span></p>
+                 <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Driver:</span> <span id="driver-name">---</span> (<span id="driver-rating">---</span> <span class="lucide text-yellow-400 text-sm">&#xeae5;</span>)</p> <p class="text-gray-300 mb-2"><span class="font-medium text-gray-100">Vehicle:</span> <span id="driver-vehicle">---</span></p>
                  <p class="text-gray-300 mb-4"><span class="font-medium text-gray-100">Est. Arrival:</span> <span id="driver-eta">---</span> minutes</p>
                  <button id="cancel-ride-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Cancel Ride</button>
             </div>
@@ -168,18 +161,15 @@
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea9b;</span> 
-                    <h3 class="text-xl font-semibold text-white mb-2">Safety First</h3>
+                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea9b;</span> <h3 class="text-xl font-semibold text-white mb-2">Safety First</h3>
                     <p class="text-gray-300">Verified drivers, real-time ride tracking, and in-app emergency features ensure your peace of mind.</p>
                 </div>
                 <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                     <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea58;</span> 
-                     <h3 class="text-xl font-semibold text-white mb-2">Simple Booking</h3>
+                     <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea58;</span> <h3 class="text-xl font-semibold text-white mb-2">Simple Booking</h3>
                     <p class="text-gray-300">Book your ride in seconds through our user-friendly website or upcoming mobile app.</p>
                 </div>
                 <div class="bg-gray-700/50 p-8 rounded-xl shadow-lg hover:shadow-primary-900/50 transform hover:-translate-y-2 transition duration-300 ease-in-out border border-gray-700 hover:border-primary-500">
-                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xe953;</span> 
-                    <h3 class="text-xl font-semibold text-white mb-2">Schedule Ahead</h3>
+                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xe953;</span> <h3 class="text-xl font-semibold text-white mb-2">Schedule Ahead</h3>
                     <p class="text-gray-300">Plan your trips in advance. Schedule rides for airport transfers, appointments, or any occasion.</p>
                 </div>
             </div>
@@ -188,8 +178,7 @@
 
     <section id="rewards" class="py-16 md:py-24 bg-gray-900">
         <div class="container mx-auto px-4 text-center">
-             <span class="lucide text-5xl text-yellow-400 mb-4 inline-block pulse-reward">&#xeae5;</span> 
-             <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Salaam Rewards</h2>
+             <span class="lucide text-5xl text-yellow-400 mb-4 inline-block pulse-reward">&#xeae5;</span> <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Salaam Rewards</h2>
             <p class="text-lg text-gray-400 mb-10 max-w-2xl mx-auto">
                 We appreciate our loyal customers! Earn points for every ride and redeem them for discounts and exclusive perks.
             </p>
@@ -197,20 +186,16 @@
                  <h3 class="text-2xl font-semibold text-white mb-4">How it Works</h3>
                  <ul class="text-left space-y-3 text-primary-100">
                     <li class="flex items-start space-x-3">
-                        <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> 
-                        <span>Sign up or log in to your Salaam Rides account.</span>
+                        <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Sign up or log in to your Salaam Rides account.</span>
                     </li>
                      <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> 
-                         <span>Earn points automatically for every completed ride.</span>
+                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Earn points automatically for every completed ride.</span>
                      </li>
                      <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> 
-                         <span>Track your points balance in your profile.</span>
+                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Track your points balance in your profile.</span>
                      </li>
                      <li class="flex items-start space-x-3">
-                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> 
-                         <span>Redeem points for ride discounts or special offers.</span>
+                         <span class="lucide text-xl text-yellow-300 mt-1 flex-shrink-0">&#xe96c;</span> <span>Redeem points for ride discounts or special offers.</span>
                      </li>
                  </ul>
                  <button id="join-rewards-btn" class="mt-8 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
@@ -284,18 +269,13 @@
             <form id="schedule-form" class="space-y-4">
                  <div class="relative">
                     <label for="schedule-pickup-address" class="block text-sm font-medium text-gray-300 mb-1">Pickup Location</label>
-                    <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4b;</span>
-                    
-                    <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full pl-10 pr-12 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    
+                    <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4b;</span> <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full pl-10 pr-12 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                     <button type="button" id="use-current-location-schedule" title="Use Current Location" class="absolute right-3 top-[38px] transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20">
-                        <span class="lucide text-lg">&#xe9cd;</span> 
-                    </button>
+                        <span class="lucide text-lg">&#xe9cd;</span> </button>
                 </div>
                  <div class="relative">
                     <label for="schedule-dropoff-address" class="block text-sm font-medium text-gray-300 mb-1">Dropoff Location</label>
-                     <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4a;</span>
-                     <input type="text" id="schedule-dropoff-address" name="dropoff" required placeholder="Enter Dropoff Location" class="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                     <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10">&#xea4a;</span> <input type="text" id="schedule-dropoff-address" name="dropoff" required placeholder="Enter Dropoff Location" class="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 </div>
                  <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-300 mb-2">Vehicle Type</label>
