@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'LucideIcons';
-  /* Updated URL to avoid potential 404s on specific versions */
+  /* Use @latest to ensure the most recent font file */
   src: url(https://cdn.jsdelivr.net/npm/lucide-static@0.473.0/font/lucide.ttf) format('truetype');
 }
 
