@@ -1,319 +1,306 @@
-// Add Islamic UI enhancements and animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Add Islamic greeting on page load
-    createIslamicGreeting();
-    
-    // Add scroll reveal animation to sections
-    addScrollRevealAnimation();
-    
-    // Add decorative elements
-    addIslamicDecorativeElements();
-    
-    // Add prayer time reminder
-    setupPrayerTimeReminder();
-    
-    // Add Qibla compass
-    addQiblaCompass();
-    
-    // Enhance geolocation button
-    enhanceLocationButtons();
-    
-    // Add scroll down arrow
-    addScrollDownArrow();
-    
-    // Add Arabic font for Islamic text
-    addArabicFont();
-    
-    // Set current year in footer
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-    
-    // Add vehicle type tooltips
-    addVehicleTooltips();
-    
-    // Override existing form submissions
-    overrideFormSubmissions();
-});
+let map; 
+let pickupAutocomplete, dropoffAutocomplete, schedulePickupAutocomplete, scheduleDropoffAutocomplete;
+let geocoder; // Declare geocoder globally
 
-// Create and show Islamic greeting on first visit
-function createIslamicGreeting() {
-    // Check if user has seen the greeting before
-    if (localStorage.getItem('hasSeenGreeting')) {
+// --- Initialization Function for Google Maps API ---
+function initMap() {
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') {
+        console.error("Google Maps API not loaded correctly. Check API key and script tag.");
+        showConfirmation("Error loading map features. Please check your connection or API key configuration.", true);
+        return; 
+    }
+
+    console.log("Google Maps API loaded successfully.");
+    geocoder = new google.maps.Geocoder(); // Initialize the geocoder
+
+    const guyanaCenter = { lat: 6.8013, lng: -58.1551 }; 
+
+    const mapStyles = [ { elementType: "geometry", stylers: [{ color: "#242f3e" }] }, { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] }, { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] }, { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }], }, { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }], }, { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#263c3f" }], }, { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#6b9a76" }], }, { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }], }, { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }], }, { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }], }, { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#746855" }], }, { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1f2835" }], }, { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#f3d19c" }], }, { featureType: "transit", elementType: "geometry", stylers: [{ color: "#2f3948" }], }, { featureType: "transit.station", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }], }, { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }], }, { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }], }, { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }], }, ];
+
+    const mapElement = document.getElementById('map-canvas');
+    if (mapElement) {
+         try {
+            map = new google.maps.Map(mapElement, {
+                center: guyanaCenter,
+                zoom: 12, 
+                mapTypeId: 'roadmap',
+                styles: mapStyles, 
+                disableDefaultUI: true, 
+                zoomControl: true,
+                streetViewControl: false,
+                mapTypeControl: false,
+                fullscreenControl: false
+            });
+            console.log("Map initialized.");
+         } catch (error) {
+             console.error("Error initializing Google Map:", error);
+             showConfirmation("Could not display the map.", true);
+         }
+    } else {
+        console.error("Map canvas element not found.");
+    }
+
+    const autocompleteOptions = {
+        componentRestrictions: { country: "gy" }, 
+        fields: ["address_components", "geometry", "icon", "name", "formatted_address"], 
+        strictBounds: false, 
+    };
+
+    const pickupInput = document.getElementById('pickup-address');
+    const dropoffInput = document.getElementById('dropoff-address');
+    const schedulePickupInput = document.getElementById('schedule-pickup-address');
+    const scheduleDropoffInput = document.getElementById('schedule-dropoff-address');
+
+    const initAutocomplete = (inputElement, options) => {
+        if (inputElement && typeof google !== 'undefined' && google.maps && google.maps.places) {
+            const autocomplete = new google.maps.places.Autocomplete(inputElement, options);
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                if (place && place.formatted_address) {
+                    console.log(`${inputElement.id} Place Selected:`, place.formatted_address);
+                    if (inputElement.id === 'pickup-address' || inputElement.id === 'dropoff-address') {
+                        updateFareEstimate();
+                    }
+                } else {
+                    console.log("Autocomplete selection cleared or invalid place.");
+                     if (inputElement.id === 'pickup-address' || inputElement.id === 'dropoff-address') {
+                         document.getElementById('fare-estimate').textContent = ''; 
+                     }
+                }
+            });
+            return autocomplete; 
+        } else {
+            console.error(`Input field #${inputElement?.id} not found or Google Maps API not ready.`);
+            return null;
+        }
+    };
+
+    try {
+        pickupAutocomplete = initAutocomplete(pickupInput, autocompleteOptions);
+        dropoffAutocomplete = initAutocomplete(dropoffInput, autocompleteOptions);
+        schedulePickupAutocomplete = initAutocomplete(schedulePickupInput, autocompleteOptions);
+        scheduleDropoffAutocomplete = initAutocomplete(scheduleDropoffInput, autocompleteOptions);
+    } catch (error) {
+        console.error("Error initializing autocomplete:", error);
+        showConfirmation("Error setting up address search. Please try again later.", true);
+    }
+} 
+
+// --- Geolocation Function ---
+function getCurrentLocation(inputId, buttonElement) {
+    if (!navigator.geolocation) {
+        showConfirmation("Geolocation is not supported by your browser.", true);
         return;
     }
-    
-    const greeting = document.createElement('div');
-    greeting.className = 'salam-greeting';
-    greeting.innerHTML = `
-        <div class="salam-greeting-content">
-            <div class="arabic-text">السلام عليكم</div>
-            <h1>Welcome to Salaam Rides</h1>
-            <p>Safe and reliable transportation service in Guyana</p>
-            <p>بسم الله الرحمن الرحيم</p>
-            <button id="close-greeting">Begin Your Journey</button>
-        </div>
-    `;
-    
-    document.body.appendChild(greeting);
-    
-    // Show greeting with slight delay
-    setTimeout(() => {
-        greeting.classList.add('show');
-    }, 500);
-    
-    // Close greeting
-    document.getElementById('close-greeting').addEventListener('click', () => {
-        greeting.classList.remove('show');
-        setTimeout(() => {
-            greeting.remove();
-        }, 500);
-        localStorage.setItem('hasSeenGreeting', 'true');
-    });
-}
 
-// Add scroll reveal animation to all sections
-function addScrollRevealAnimation() {
-    // Add the scroll-reveal class to all sections
-    const sections = document.querySelectorAll('section');
-    sections.forEach(section => {
-        section.classList.add('scroll-reveal');
-    });
-    
-    // Also add to feature cards, reward section, etc.
-    const elements = document.querySelectorAll('.bg-gray-700\\/50, .max-w-lg');
-    elements.forEach(el => {
-        el.classList.add('scroll-reveal');
-    });
-    
-    // Function to check if element is in viewport
-    function checkReveal() {
-        const revealElements = document.querySelectorAll('.scroll-reveal');
-        const windowHeight = window.innerHeight;
-        
-        revealElements.forEach(el => {
-            const revealTop = el.getBoundingClientRect().top;
-            const revealPoint = 150;
-            
-            if (revealTop < windowHeight - revealPoint) {
-                el.classList.add('revealed');
+    if (!geocoder) {
+        showConfirmation("Map services are still loading, please try again shortly.", true);
+        return;
+    }
+
+    const inputElement = document.getElementById(inputId);
+    if (!inputElement) {
+        console.error(`Input element with ID ${inputId} not found.`);
+        return;
+    }
+
+    // Provide visual feedback
+    const originalPlaceholder = inputElement.placeholder;
+    inputElement.placeholder = "Fetching location...";
+    if (buttonElement) buttonElement.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const latLng = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            geocoder.geocode({ location: latLng }, (results, status) => {
+                inputElement.placeholder = originalPlaceholder; // Restore placeholder
+                if (buttonElement) buttonElement.disabled = false; // Re-enable button
+
+                if (status === "OK") {
+                    if (results[0]) {
+                        inputElement.value = results[0].formatted_address;
+                        console.log("Geocoded Address:", results[0].formatted_address);
+                        showConfirmation("Location set!", false);
+                        // Optionally center map
+                        if(map) {
+                            map.setCenter(latLng);
+                            map.setZoom(15); // Zoom in a bit
+                        }
+                        // Update fare if it's the main booking form pickup
+                        if (inputId === 'pickup-address') {
+                            updateFareEstimate();
+                        }
+                    } else {
+                        showConfirmation("No address found for your location.", true);
+                    }
+                } else {
+                    console.error("Geocoder failed due to: " + status);
+                    showConfirmation("Could not determine address from location.", true);
+                }
+            });
+        },
+        (error) => {
+            inputElement.placeholder = originalPlaceholder; // Restore placeholder
+            if (buttonElement) buttonElement.disabled = false; // Re-enable button
+            let errorMsg = "Error getting location: ";
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg += "Permission denied.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg += "Location information unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    errorMsg += "Request timed out.";
+                    break;
+                default:
+                    errorMsg += "An unknown error occurred.";
+                    break;
             }
-        });
-    }
-    
-    // Check on load and scroll
-    window.addEventListener('scroll', checkReveal);
-    window.addEventListener('load', checkReveal);
-}
-
-// Add Islamic decorative elements
-function addIslamicDecorativeElements() {
-    // Add dome-style borders to key containers
-    const domeElements = document.querySelectorAll('.bg-gray-800\\/80, .bg-gradient-to-br, .modal-content');
-    domeElements.forEach(el => {
-        el.classList.add('dome-border');
-    });
-    
-    // Add Islamic dividers before sections
-    const sections = document.querySelectorAll('section');
-    sections.forEach((section, index) => {
-        if (index > 0) { // Skip first section
-            const divider = document.createElement('div');
-            divider.className = 'islamic-divider';
-            section.parentNode.insertBefore(divider, section);
+            console.error(errorMsg, error);
+            showConfirmation(errorMsg, true);
+        },
+        {
+            enableHighAccuracy: true, // Try for better accuracy
+            timeout: 10000,         // Wait 10 seconds
+            maximumAge: 0           // Don't use cached position
         }
-    });
-    
-    // Add Islamic pattern to section backgrounds
-    document.querySelectorAll('section').forEach(section => {
-        section.style.position = 'relative';
-        section.style.overflow = 'hidden';
-    });
+    );
 }
 
-// Set up prayer time reminder
-function setupPrayerTimeReminder() {
-    const reminderContainer = document.createElement('div');
-    reminderContainer.className = 'prayer-time-reminder';
-    reminderContainer.innerHTML = `
-        <span class="icon">☪</span>
-        <span class="prayer-message">Prayer time reminder will appear here</span>
-    `;
-    document.body.appendChild(reminderContainer);
-    
-    // Mock prayer times (in a real app, these would come from an API)
-    const prayerTimes = {
-        fajr: '5:15 AM',
-        dhuhr: '12:30 PM',
-        asr: '3:45 PM',
-        maghrib: '6:20 PM',
-        isha: '7:45 PM'
-    };
-    
-    // Show random prayer time reminder after a delay
+// --- Helper Functions ---
+
+function calculateMockFare(vehicleType) {
+    const baseFare = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000; 
+    let multiplier = 1;
+    if (vehicleType === 'suv') {
+        multiplier = 1.5;
+    } else if (vehicleType === 'premium') {
+        multiplier = 2.0;
+    }
+    const finalFare = Math.round(baseFare * multiplier);
+    return `Est. Fare: G$${finalFare}`;
+}
+
+function showConfirmation(message, isError = false) {
+    const confirmationMessage = document.getElementById('confirmation-message');
+    const confirmationText = document.getElementById('confirmation-text');
+    if (!confirmationMessage || !confirmationText) return;
+
+    confirmationText.textContent = message;
+    confirmationMessage.classList.remove('hide');
+    confirmationMessage.classList.add('show');
+
+    if(isError) {
+        confirmationMessage.classList.remove('bg-green-600');
+        confirmationMessage.classList.add('bg-red-600');
+    } else {
+         confirmationMessage.classList.remove('bg-red-600');
+         confirmationMessage.classList.add('bg-green-600');
+    }
+
     setTimeout(() => {
-        const prayers = Object.keys(prayerTimes);
-        const randomPrayer = prayers[Math.floor(Math.random() * prayers.length)];
-        reminderContainer.querySelector('.prayer-message').textContent = 
-            `${randomPrayer.charAt(0).toUpperCase() + randomPrayer.slice(1)} prayer time: ${prayerTimes[randomPrayer]}`;
-        reminderContainer.classList.add('show');
-        
-        // Hide after 5 seconds
-        setTimeout(() => {
-            reminderContainer.classList.remove('show');
-        }, 5000);
-    }, 15000); // Show after 15 seconds
+         confirmationMessage.classList.remove('show');
+         confirmationMessage.classList.add('hide');
+    }, 3500); 
 }
 
-// Add Qibla compass
-function addQiblaCompass() {
-    const compass = document.createElement('div');
-    compass.className = 'qibla-compass';
-    compass.innerHTML = '<div class="qibla-compass-needle"></div>';
-    compass.title = 'Qibla Direction (Demo Only)';
-    document.body.appendChild(compass);
-    
-    // For demo purposes - rotate to random angle
-    // In a real app, this would calculate the actual Qibla direction
-    const needle = compass.querySelector('.qibla-compass-needle');
-    const randomAngle = Math.floor(Math.random() * 360);
-    needle.style.transform = `rotate(${randomAngle}deg)`;
-    
-    compass.addEventListener('click', () => {
-        showConfirmation('This is a demo Qibla direction. In a real app, this would show the actual direction to Mecca.');
-    });
-}
-
-// Enhance location buttons with additional visual cues
-function enhanceLocationButtons() {
-    const locationBtnMain = document.getElementById('use-current-location-main');
-    const locationBtnSchedule = document.getElementById('use-current-location-schedule');
-    
-    if (locationBtnMain) {
-        // Add a tooltip
-        locationBtnMain.setAttribute('data-tooltip', 'Use Your Current Location');
-        // Add pulsing animation when form is active
-        document.getElementById('pickup-address').addEventListener('focus', () => {
-            locationBtnMain.classList.add('animate-pulse');
-        });
-        document.getElementById('pickup-address').addEventListener('blur', () => {
-            locationBtnMain.classList.remove('animate-pulse');
-        });
-    }
-    
-    if (locationBtnSchedule) {
-        locationBtnSchedule.setAttribute('data-tooltip', 'Use Your Current Location');
-        document.getElementById('schedule-pickup-address').addEventListener('focus', () => {
-            locationBtnSchedule.classList.add('animate-pulse');
-        });
-        document.getElementById('schedule-pickup-address').addEventListener('blur', () => {
-            locationBtnSchedule.classList.remove('animate-pulse');
-        });
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'flex'; 
+        document.body.style.overflow = 'hidden'; 
     }
 }
 
-// Add scroll down arrow to first section
-function addScrollDownArrow() {
-    const firstSection = document.querySelector('section');
-    if (firstSection) {
-        const scrollArrow = document.createElement('div');
-        scrollArrow.className = 'scroll-down-arrow';
-        scrollArrow.innerHTML = '↓';
-        scrollArrow.title = 'Scroll down to explore';
-        firstSection.appendChild(scrollArrow);
-        
-        scrollArrow.addEventListener('click', () => {
-            const featuresSection = document.getElementById('features');
-            if (featuresSection) {
-                featuresSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
+function closeModal(modalId) {
+     const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = ''; 
     }
 }
 
-// Add Arabic font for Islamic text
-function addArabicFont() {
-    const fontLink = document.createElement('link');
-    fontLink.rel = 'stylesheet';
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap';
-    document.head.appendChild(fontLink);
-}
-
-// Add tooltips to vehicle type options
-function addVehicleTooltips() {
-    const vehicleLabels = document.querySelectorAll('label:has(input[name="vehicleType"]), label:has(input[name="scheduleVehicleType"])');
+function switchTab(tabName) {
+    const loginBtn = document.getElementById('login-tab-btn');
+    const signupBtn = document.getElementById('signup-tab-btn');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
     
-    vehicleLabels.forEach(label => {
-        const vehicleType = label.querySelector('input').value;
-        let tooltipText = '';
-        
-        switch (vehicleType) {
-            case 'standard':
-                tooltipText = 'Affordable and comfortable sedan';
-                break;
-            case 'suv':
-                tooltipText = 'Spacious vehicle for groups or luggage';
-                break;
-            case 'premium':
-                tooltipText = 'Luxury experience with top-rated drivers';
-                break;
-        }
-        
-        if (tooltipText) {
-            label.setAttribute('title', tooltipText);
-        }
-    });
-}
+    if (!loginBtn || !signupBtn || !loginForm || !signupForm) return;
 
-// Add loader animation for ride requests
-function showLoader(parentElement) {
-    // Create loader
-    const loader = document.createElement('div');
-    loader.className = 'crescent-loader';
-    
-    // Clear parent and append loader
-    if (parentElement) {
-        parentElement.innerHTML = '';
-        parentElement.appendChild(loader);
+    if (tabName === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        loginBtn.classList.add('text-primary-400', 'border-primary-400');
+        loginBtn.classList.remove('text-gray-400', 'hover:text-primary-300', 'border-transparent');
+        signupBtn.classList.add('text-gray-400', 'hover:text-primary-300', 'border-transparent');
+        signupBtn.classList.remove('text-primary-400', 'border-primary-400');
+
+    } else if (tabName === 'signup') {
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        signupBtn.classList.add('text-primary-400', 'border-primary-400');
+        signupBtn.classList.remove('text-gray-400', 'hover:text-primary-300', 'border-transparent');
+        loginBtn.classList.add('text-gray-400', 'hover:text-primary-300', 'border-transparent');
+        loginBtn.classList.remove('text-primary-400', 'border-primary-400');
     }
-    
-    return loader;
 }
 
-// Override form submissions to add Islamic elements
-function overrideFormSubmissions() {
-    // Override the original showConfirmation function
-    window.originalShowConfirmation = window.showConfirmation;
-    window.showConfirmation = function(message, isError = false) {
-        const confirmationMessage = document.getElementById('confirmation-message');
-        const confirmationText = document.getElementById('confirmation-text');
-        if (!confirmationMessage || !confirmationText) return;
+function updateFareEstimate() {
+    const pickup = document.getElementById('pickup-address').value;
+    const dropoff = document.getElementById('dropoff-address').value;
+    const fareEstimateDiv = document.getElementById('fare-estimate');
+    const selectedVehicleType = document.querySelector('input[name="vehicleType"]:checked');
 
-        // Add Islamic symbol based on message type
-        const symbol = isError ? '⚠️' : '☪️';
-        confirmationText.innerHTML = `${symbol} ${message}`;
-        
-        confirmationMessage.classList.remove('hide');
-        confirmationMessage.classList.add('show');
+    if (pickup && dropoff && selectedVehicleType && fareEstimateDiv) {
+        fareEstimateDiv.textContent = calculateMockFare(selectedVehicleType.value);
+    } else if (fareEstimateDiv) {
+        fareEstimateDiv.textContent = ''; 
+    }
+}
 
-        if (isError) {
-            confirmationMessage.classList.remove('bg-green-600');
-            confirmationMessage.classList.add('bg-red-600');
-        } else {
-            confirmationMessage.classList.remove('bg-red-600');
-            confirmationMessage.classList.add('bg-green-600');
-        }
+// --- Event Listeners ---
 
-        setTimeout(() => {
-            confirmationMessage.classList.remove('show');
-            confirmationMessage.classList.add('hide');
-        }, 3500);
-    };
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('current-year').textContent = new Date().getFullYear();
 
-    // Override booking form submission
     const bookingForm = document.getElementById('booking-form');
+    const loginSignupBtn = document.getElementById('login-signup-btn');
+    const joinRewardsBtn = document.getElementById('join-rewards-btn');
+    const accountModal = document.getElementById('account-modal');
+    const scheduleModal = document.getElementById('schedule-modal');
+    const scheduleRideLink = document.getElementById('schedule-ride-link');
+    const scheduleRideNav = document.getElementById('schedule-ride-nav');
+    const scheduleForm = document.getElementById('schedule-form');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const bookingSection = document.getElementById('booking-section');
+    const rideStatusSection = document.getElementById('ride-status');
+    const cancelRideBtn = document.getElementById('cancel-ride-btn');
+    const mapCanvas = document.getElementById('map-canvas');
+    const vehicleTypeRadios = document.querySelectorAll('input[name="vehicleType"]');
+    const currentLocationBtnMain = document.getElementById('use-current-location-main');
+    const currentLocationBtnSchedule = document.getElementById('use-current-location-schedule');
+
+    // Fix schedule form date and time default values
+    const scheduleDate = document.getElementById('schedule-date');
+    const scheduleTime = document.getElementById('schedule-time');
+    
+    if (scheduleDate) {
+        // Set minimum date to today
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        scheduleDate.min = formattedDate;
+    }
+
     if (bookingForm) {
-        bookingForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
+        bookingForm.addEventListener('submit', (e) => {
+            e.preventDefault(); 
             const pickup = document.getElementById('pickup-address').value;
             const dropoff = document.getElementById('dropoff-address').value;
             const vehicleType = document.querySelector('input[name="vehicleType"]:checked')?.value;
@@ -321,119 +308,208 @@ function overrideFormSubmissions() {
             if (pickup && dropoff && vehicleType) {
                 console.log('Booking submitted:', { pickup, dropoff, vehicleType });
                 
-                const bookingSection = document.getElementById('booking-section');
-                const rideStatusSection = document.getElementById('ride-status');
-                const mapCanvas = document.getElementById('map-canvas');
-                
                 if (bookingSection && rideStatusSection && mapCanvas) {
-                    bookingSection.classList.add('hidden');
-                    mapCanvas.classList.add('hidden');
-                    
-                    // Show loader before showing ride status
-                    rideStatusSection.classList.remove('hidden');
-                    const statusMessage = document.getElementById('status-message');
-                    if (statusMessage) {
-                        statusMessage.innerHTML = '<div class="crescent-loader"></div> Searching for drivers...';
-                    }
-                    
+                    bookingSection.classList.add('hidden'); 
+                    mapCanvas.classList.add('hidden'); 
+                    rideStatusSection.classList.remove('hidden'); 
+
+                    document.getElementById('status-message').textContent = 'Searching for nearby drivers...';
                     document.getElementById('driver-name').textContent = '---';
                     document.getElementById('driver-rating').textContent = '---';
                     document.getElementById('driver-vehicle').textContent = '---';
                     document.getElementById('driver-eta').textContent = '---';
 
-                    // Show ride status after a delay with animation
                     setTimeout(() => {
-                        if (statusMessage) {
-                            statusMessage.innerHTML = '<span style="color: #f59e0b;">Alhamdulillah!</span> Driver En Route!';
-                        }
-                        document.getElementById('driver-name').textContent = 'Mohammed A.';
+                        document.getElementById('status-message').textContent = 'Driver En Route!';
+                        document.getElementById('driver-name').textContent = 'John K.';
                         document.getElementById('driver-rating').textContent = '4.9';
                         document.getElementById('driver-vehicle').textContent = `Toyota Allion (${vehicleType})`;
-                        document.getElementById('driver-eta').textContent = `${Math.floor(Math.random() * 5) + 3}`;
-                    }, 2500);
+                        document.getElementById('driver-eta').textContent = `${Math.floor(Math.random() * 5) + 3}`; 
+                    }, 2500); 
                 } else {
-                    showConfirmation(`Finding your ${vehicleType} ride from ${pickup} to ${dropoff}...`);
+                     showConfirmation(`Finding your ${vehicleType} ride from ${pickup} to ${dropoff}...`);
                 }
                 
-                document.getElementById('fare-estimate').textContent = '';
+                document.getElementById('fare-estimate').textContent = ''; 
             } else {
-                showConfirmation('Please enter pickup, dropoff, and select vehicle type.', true);
+                showConfirmation('Please enter pickup, dropoff, and select vehicle type.', true); 
             }
-        }, true); // Use capturing to override any existing handlers
+        });
     }
-
-    // Override schedule form submission
-    const scheduleForm = document.getElementById('schedule-form');
+    
+    if (vehicleTypeRadios) {
+        vehicleTypeRadios.forEach(radio => {
+            radio.addEventListener('change', updateFareEstimate);
+        });
+    }
+    
     if (scheduleForm) {
-        scheduleForm.addEventListener('submit', function(e) {
+        scheduleForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
             const pickup = document.getElementById('schedule-pickup-address').value;
             const dropoff = document.getElementById('schedule-dropoff-address').value;
             const date = document.getElementById('schedule-date').value;
             const time = document.getElementById('schedule-time').value;
             const vehicleType = document.querySelector('input[name="scheduleVehicleType"]:checked')?.value;
-            
+
+
             if (pickup && dropoff && date && time && vehicleType) {
                 console.log('Scheduling submitted:', { pickup, dropoff, date, time, vehicleType });
-                
-                const formattedDate = new Date(date + 'T' + time).toLocaleString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
                 closeModal('schedule-modal');
-                showConfirmation(`الحمد لله! Ride scheduled for ${formattedDate}!`);
+                showConfirmation(`Ride scheduled for ${date} at ${time}!`);
                 scheduleForm.reset();
             } else {
-                showConfirmation('Please fill in all required fields for scheduling.', true);
+                 showConfirmation('Please fill in all required fields for scheduling.', true);
             }
-        }, true); // Use capturing to override any existing handlers
+        });
     }
 
-    // Override login form submission
-    const loginForm = document.getElementById('login-form');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            console.log('Login attempt');
             closeModal('account-modal');
-            showConfirmation('مرحبا! Welcome back to Salaam Rides!');
+            showConfirmation('Logged in successfully!');
             loginForm.reset();
-        }, true);
+        });
     }
 
-    // Override signup form submission
-    const signupForm = document.getElementById('signup-form');
     if (signupForm) {
-        signupForm.addEventListener('submit', function(e) {
+        signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            console.log('Sign up attempt');
             closeModal('account-modal');
-            showConfirmation('As-salamu alaykum! Welcome to Salaam Rides!');
+            showConfirmation('Account created successfully!');
             signupForm.reset();
-        }, true);
+        });
     }
 
-    // Override cancel ride button
-    const cancelRideBtn = document.getElementById('cancel-ride-btn');
-    if (cancelRideBtn) {
-        cancelRideBtn.addEventListener('click', function() {
-            const rideStatusSection = document.getElementById('ride-status');
-            const bookingSection = document.getElementById('booking-section');
-            const mapCanvas = document.getElementById('map-canvas');
-            const bookingForm = document.getElementById('booking-form');
-            
-            if (rideStatusSection && bookingSection && mapCanvas && bookingForm) {
-                rideStatusSection.classList.add('hidden');
-                bookingSection.classList.remove('hidden');
-                mapCanvas.classList.remove('hidden');
-                bookingForm.reset();
-                document.getElementById('fare-estimate').textContent = '';
-                showConfirmation('في أمان الله (Fee Amanullah) - Ride cancelled.');
+    if (loginSignupBtn) {
+        loginSignupBtn.addEventListener('click', () => openModal('account-modal'));
+    }
+    if (joinRewardsBtn) {
+        joinRewardsBtn.addEventListener('click', () => openModal('account-modal'));
+    }
+
+    if (scheduleRideLink) {
+        scheduleRideLink.addEventListener('click', (e) => {
+             e.preventDefault();
+             openModal('schedule-modal');
+        });
+    }
+     if (scheduleRideNav) {
+         scheduleRideNav.addEventListener('click', (e) => {
+             e.preventDefault();
+             openModal('schedule-modal');
+         });
+     }
+
+     if (cancelRideBtn && bookingSection && rideStatusSection && mapCanvas && bookingForm) {
+         cancelRideBtn.addEventListener('click', () => {
+             rideStatusSection.classList.add('hidden'); 
+             bookingSection.classList.remove('hidden'); 
+             mapCanvas.classList.remove('hidden'); 
+             bookingForm.reset(); 
+             document.getElementById('fare-estimate').textContent = ''; 
+             showConfirmation('Ride cancelled.');
+         });
+     }
+
+     // Add listeners for the current location buttons
+     if(currentLocationBtnMain) {
+         currentLocationBtnMain.addEventListener('click', function() {
+             getCurrentLocation('pickup-address', this); // Pass input ID and the button itself
+         });
+     }
+     if(currentLocationBtnSchedule) {
+         currentLocationBtnSchedule.addEventListener('click', function() {
+             getCurrentLocation('schedule-pickup-address', this); // Pass input ID and the button itself
+         });
+     }
+
+    window.addEventListener('click', (event) => {
+        if (event.target == accountModal) {
+            closeModal('account-modal');
+        }
+         if (event.target == scheduleModal) {
+            closeModal('schedule-modal');
+        }
+    });
+
+    const animatedElements = document.querySelectorAll('.fade-in');
+    function checkFadeIn() {
+        const triggerBottom = window.innerHeight * 0.9; 
+        animatedElements.forEach(el => {
+            const boxTop = el.getBoundingClientRect().top;
+            if (boxTop < triggerBottom) {
+                if (el.style.opacity !== '1') {
+                     el.style.opacity = '1';
+                }
             }
-        }, true);
+        });
+    }
+
+    window.addEventListener('scroll', checkFadeIn);
+    window.addEventListener('load', checkFadeIn);
+
+    // Initialize the specific elements in the schedule form
+    initScheduleForm();
+});
+
+// Special function to fix the schedule form
+function initScheduleForm() {
+    // Fix the location button in the pickup location field
+    const pickupLocationInput = document.getElementById('pickup-location');
+    const dropoffLocationInput = document.getElementById('dropoff-location');
+    
+    if (pickupLocationInput) {
+        // Create location button if it doesn't exist
+        const locationButton = document.createElement('button');
+        locationButton.type = 'button';
+        locationButton.className = 'location-icon';
+        locationButton.innerHTML = '<span class="lucide">&#xe9cd;</span>';
+        locationButton.title = 'Use Current Location';
+        
+        // Make sure the parent has position: relative
+        pickupLocationInput.parentElement.style.position = 'relative';
+        
+        // Append the button
+        pickupLocationInput.parentElement.appendChild(locationButton);
+        
+        // Add event listener
+        locationButton.addEventListener('click', function() {
+            getCurrentLocation('pickup-location', this);
+        });
+    }
+    
+    // Fix the vehicle option selection
+    const vehicleOptions = document.querySelectorAll('.vehicle-option');
+    if (vehicleOptions && vehicleOptions.length) {
+        vehicleOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                vehicleOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                // Update the hidden input value
+                const hiddenInput = document.querySelector('input[name="vehicleType"]');
+                if (hiddenInput) {
+                    hiddenInput.value = this.getAttribute('data-value');
+                }
+            });
+        });
+    }
+    
+    // Set default time to current time + 30 minutes
+    const timeInput = document.getElementById('schedule-time');
+    if (timeInput) {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() + 30);
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        timeInput.value = `${hours}:${minutes}`;
     }
 }
+
+// Make sure initMap is globally accessible
+window.initMap = initMap;
