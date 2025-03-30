@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salaam Rides - Reliable Taxi Service in Guyana</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@0.473.0/font/lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: inline-block; 
+        vertical-align: middle; 
+      }
+      .fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+        opacity: 0;
+      }
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+      .delay-1 { animation-delay: 0.2s; }
+      .delay-2 { animation-delay: 0.4s; }
+      .delay-3 { animation-delay: 0.6s; }
+
+      .pulse-reward {
+        animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.05); }
+      }
+
+      #confirmation-message {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        opacity: 0;
+        pointer-events: none; 
+        z-index: 100; 
+      }
+      #confirmation-message.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+        pointer-events: auto; 
+      }
+       #confirmation-message.hide {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px); 
+      }
+
+      #account-modal, #schedule-modal {
+        display: none; 
+        position: fixed;
+        z-index: 50;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6); 
+        backdrop-filter: blur(5px); 
+      }
+      .modal-content {
+        position: relative;
+        margin: 10% auto; 
+        padding: 30px;
+        width: 90%;
+        max-width: 500px; 
+        border-radius: 1rem; 
+      }
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 1.8rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+      .modal-close-btn:hover {
+        color: #4ade80; 
+      }
+
+       button:focus-visible, input:focus-visible, a:focus-visible {
+          outline: 2px solid #4ade80; 
+          outline-offset: 2px;
+       }
+
+       /* Google Maps Autocomplete dropdown styling */
+       .pac-container {
+           background-color: #2d3748; 
+           border-radius: 0.5rem;
+           border: 1px solid #4a5568; 
+           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+           z-index: 1000 !important; 
+           font-family: 'Inter', sans-serif;
+       }
+       .pac-item {
+           padding: 0.75rem 1rem;
+           font-size: 0.875rem;
+           color: #e2e8f0; 
+           cursor: pointer;
+           border-top: 1px solid #4a5568; 
+       }
+       .pac-item:first-child {
+           border-top: none;
+       }
+       .pac-item:hover {
+           background-color: #4a5568; 
+       }
+       .pac-item-query {
+           font-weight: 600;
+           color: #f7fafc; 
+       }
+       .pac-matched {
+           font-weight: 700;
+           color: #6ee7b7; 
+       }
+       
+       /* Style for the map container */
+       #map-canvas {
+            height: 300px; /* Define a height for the map */
+            width: 100%;
+            border-radius: 0.5rem; /* Match other rounded corners */
+            margin-top: 1.5rem; /* Add some space above the map */
+            background-color: #4a5568; /* Placeholder background */
+       }
+
+    </style>
+    
+    <script>
+      tailwind.config = {
+        darkMode: 'class', 
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              primary: { 
+                DEFAULT: '#10b981', 
+                '50': '#ecfdf5',
+                '100': '#d1fae5',
+                '200': '#a7f3d0',
+                '300': '#6ee7b7',
+                '400': '#34d399',
+                '500': '#10b981',
+                '600': '#059669',
+                '700': '#047857',
+                '800': '#065f46',
+                '900': '#064e3b',
+                '950': '#022c22',
+              },
+            }
+          }
+        }
+      }
+    </script>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-6uXAa6MkIMwlYYwMIVBq5s3T0aTh0EI&libraries=places&callback=initMap">
+    </script>
+
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans antialiased dark">
+
+    
+    <header class="bg-gray-900/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-700/50">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            
+            <a href="#" class="text-2xl font-bold text-primary-400">
+                Salaam Rides <span class="text-xs font-normal text-gray-400">Guyana</span>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#features" class="text-gray-300 hover:text-primary-400 transition duration-300">Features</a>
+                <a href="#rewards" class="text-gray-300 hover:text-primary-400 transition duration-300">Rewards</a>
+                <a href="#schedule-ride" id="schedule-ride-nav" class="text-gray-300 hover:text-primary-400 transition duration-300">Schedule Ride</a>
+                <button id="login-signup-btn" class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg">
+                    Login / Sign Up
+                </button>
+            </div>
+            
+            <div class="md:hidden">
+                <button class="text-gray-300 hover:text-primary-400 focus:outline-none">
+                    <span class="lucide text-2xl">&#xe9b2;</span> 
+                </button>
+                
+            </div>
+        </nav>
+    </header>
+
+    
+    <section class="relative h-[80vh] min-h-[600px] flex items-center justify-center text-center px-4 overflow-hidden">
+        
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-gray-900 z-0">
+             
+            <img src="https://placehold.co/1920x1080/111827/374151?text=Georgetown+Night+View+(Placeholder)"
+                  alt="Background placeholder"
+                  class="w-full h-full object-cover opacity-30"
+                  onerror="this.onerror=null; this.src='https://placehold.co/1920x1080/111827/374151?text=Placeholder+Image';">
+        </div>
+
+        <div class="relative z-10 max-w-3xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 fade-in">
+                Your Reliable Ride in Guyana
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 mb-8 fade-in delay-1">
+                Book a safe and comfortable taxi anytime, anywhere with Salaam Rides.
+            </p>
+
+            
+            <form id="booking-form" class="bg-gray-800/70 backdrop-blur-sm p-6 md:p-8 rounded-xl shadow-xl fade-in delay-2">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    
+                    <div class="relative">
+                         <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">&#xea4b;</span> 
+                         <input type="text" id="pickup-address" name="pickup" placeholder="Enter Pickup Location" required
+                               class="w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
+                    </div>
+                    
+                    <div class="relative">
+                         <span class="lucide absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">&#xea4a;</span> 
+                         <input type="text" id="dropoff-address" name="dropoff" placeholder="Enter Dropoff Location" required
+                               class="w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-300">
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg flex items-center justify-center space-x-2">
+                        <span class="lucide text-xl">&#xeb15;</span> 
+                        <span>Book Now</span>
+                    </button>
+                </div>
+                <div class="text-center">
+                     <a href="#schedule-ride" id="schedule-ride-link" class="text-primary-400 hover:text-primary-300 text-sm transition duration-300">
+                        Or Schedule a Ride for Later
+                     </a>
+                </div>
+            </form>
+             
+            <div id="map-canvas" class="fade-in delay-3">
+                </div>
+        </div>
+    </section>
+
+    
+    <section id="features" class="py-16 md:py-24 bg-gray-800">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Salaam Rides?</h2>
+            <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
+                Experience the difference with our commitment to safety, reliability, and convenience across Guyana.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-gray-700 p-8 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 ease-in-out">
+                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea9b;</span> 
+                    <h3 class="text-xl font-semibold text-white mb-2">Safety First</h3>
+                    <p class="text-gray-300">Verified drivers, real-time ride tracking, and in-app emergency features ensure your peace of mind.</p>
+                </div>
+                
+                <div class="bg-gray-700 p-8 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 ease-in-out">
+                     <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xea58;</span> 
+                     <h3 class="text-xl font-semibold text-white mb-2">Simple Booking</h3>
+                    <p class="text-gray-300">Book your ride in seconds through our user-friendly website or upcoming mobile app.</p>
+                </div>
+                
+                <div class="bg-gray-700 p-8 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 ease-in-out">
+                    <span class="lucide text-4xl text-primary-400 mb-4 inline-block">&#xe953;</span> 
+                    <h3 class="text-xl font-semibold text-white mb-2">Schedule Ahead</h3>
+                    <p class="text-gray-300">Plan your trips in advance. Schedule rides for airport transfers, appointments, or any occasion.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="rewards" class="py-16 md:py-24 bg-gray-900">
+        <div class="container mx-auto px-4 text-center">
+             <span class="lucide text-5xl text-yellow-400 mb-4 inline-block pulse-reward">&#xeae5;</span> 
+             <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Salaam Rewards</h2>
+            <p class="text-lg text-gray-400 mb-10 max-w-2xl mx-auto">
+                We appreciate our loyal customers! Earn points for every ride and redeem them for discounts and exclusive perks.
+            </p>
+            <div class="bg-gradient-to-r from-primary-600 to-primary-800 p-8 rounded-xl shadow-xl max-w-lg mx-auto">
+                 <h3 class="text-2xl font-semibold text-white mb-3">How it Works</h3>
+                 <ul class="text-left space-y-2 text-primary-100">
+                    <li class="flex items-start space-x-2">
+                        <span class="lucide text-xl text-yellow-300 mt-1">&#xe96c;</span> 
+                        <span>Sign up or log in to your Salaam Rides account.</span>
+                    </li>
+                     <li class="flex items-start space-x-2">
+                         <span class="lucide text-xl text-yellow-300 mt-1">&#xe96c;</span> 
+                         <span>Earn points automatically for every completed ride.</span>
+                     </li>
+                     <li class="flex items-start space-x-2">
+                         <span class="lucide text-xl text-yellow-300 mt-1">&#xe96c;</span> 
+                         <span>Track your points balance in your profile.</span>
+                     </li>
+                     <li class="flex items-start space-x-2">
+                         <span class="lucide text-xl text-yellow-300 mt-1">&#xe96c;</span> 
+                         <span>Redeem points for ride discounts or special offers.</span>
+                     </li>
+                 </ul>
+                 <button id="join-rewards-btn" class="mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg">
+                     Join Rewards Now!
+                 </button>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer class="bg-gray-800 border-t border-gray-700/50 py-8">
+        <div class="container mx-auto px-4 text-center text-gray-400">
+            <p>&copy; <span id="current-year"></span> Salaam Rides. All Rights Reserved.</p>
+            <p class="text-sm mt-2">Serving Georgetown, Linden, Berbice, and all across Guyana.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-primary-400 transition duration-300">Privacy Policy</a>
+                <span>|</span>
+                <a href="#" class="hover:text-primary-400 transition duration-300">Terms of Service</a>
+                 <span>|</span>
+                 <a href="#" class="hover:text-primary-400 transition duration-300">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    
+    <div id="confirmation-message" class="bg-green-600 text-white text-sm font-medium py-3 px-6 rounded-lg shadow-lg">
+        <span id="confirmation-text">Ride booked successfully!</span>
+    </div>
+
+     
+    <div id="account-modal" class="fixed inset-0 z-50 items-center justify-center">
+        <div class="modal-content bg-gray-800 shadow-2xl">
+            <span class="modal-close-btn text-gray-500 hover:text-primary-400" onclick="closeModal('account-modal')">&times;</span>
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center">Welcome to Salaam Rides</h2>
+            
+            <div class="flex border-b border-gray-600 mb-6">
+                <button class="flex-1 py-2 text-center font-medium text-primary-400 border-b-2 border-primary-400" onclick="switchTab('login')">Login</button>
+                <button class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="login-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input type="email" id="login-email" name="email" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                 <div>
+                    <label for="login-password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                    <input type="password" id="login-password" name="password" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md">Login</button>
+                 <p class="text-xs text-gray-400 text-center">Forgot password?</p>
+            </form>
+
+            
+            <form id="signup-form" class="space-y-4 hidden">
+                 <div>
+                    <label for="signup-name" class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+                    <input type="text" id="signup-name" name="name" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label for="signup-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input type="email" id="signup-email" name="email" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                 <div>
+                    <label for="signup-password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                    <input type="password" id="signup-password" name="password" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md">Create Account</button>
+                 <p class="text-xs text-gray-400 text-center">By signing up, you agree to our Terms of Service.</p>
+            </form>
+        </div>
+    </div>
+
+     
+    <div id="schedule-modal" class="fixed inset-0 z-50 items-center justify-center">
+        <div class="modal-content bg-gray-800 shadow-2xl">
+            <span class="modal-close-btn text-gray-500 hover:text-primary-400" onclick="closeModal('schedule-modal')">&times;</span>
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center">Schedule Your Ride</h2>
+            <form id="schedule-form" class="space-y-4">
+                 <div>
+                    <label for="schedule-pickup-address" class="block text-sm font-medium text-gray-300 mb-1">Pickup Location</label>
+                    <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                 <div>
+                    <label for="schedule-dropoff-address" class="block text-sm font-medium text-gray-300 mb-1">Dropoff Location</label>
+                     <input type="text" id="schedule-dropoff-address" name="dropoff" required placeholder="Enter Dropoff Location" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="schedule-date" class="block text-sm font-medium text-gray-300 mb-1">Date</label>
+                        <input type="date" id="schedule-date" name="date" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none" style="color-scheme: dark;">
+                    </div>
+                    <div>
+                        <label for="schedule-time" class="block text-sm font-medium text-gray-300 mb-1">Time</label>
+                        <input type="time" id="schedule-time" name="time" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none" style="color-scheme: dark;">
+                    </div>
+                </div>
+                 <div>
+                    <label for="schedule-notes" class="block text-sm font-medium text-gray-300 mb-1">Notes (Optional)</label>
+                    <textarea id="schedule-notes" name="notes" rows="2" placeholder="Any special instructions? e.g., Flight number" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"></textarea>
+                </div>
+                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md">Schedule Ride</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        let map; 
+        let pickupAutocomplete, dropoffAutocomplete, schedulePickupAutocomplete, scheduleDropoffAutocomplete;
+
+        function initMap() {
+            if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') {
+                console.error("Google Maps API not loaded correctly. Check API key and script tag.");
+                showConfirmation("Error loading map features. Please check your connection or API key configuration.", true);
+                return; 
+            }
+
+            console.log("Google Maps API loaded successfully.");
+
+            // Coordinates for Georgetown, Guyana
+            const guyanaCenter = { lat: 6.8013, lng: -58.1551 }; 
+
+            // Dark mode map styles (Example from Google Maps documentation)
+            const mapStyles = [
+                { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                {
+                    featureType: "administrative.locality",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#d59563" }],
+                },
+                {
+                    featureType: "poi",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#d59563" }],
+                },
+                {
+                    featureType: "poi.park",
+                    elementType: "geometry",
+                    stylers: [{ color: "#263c3f" }],
+                },
+                {
+                    featureType: "poi.park",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#6b9a76" }],
+                },
+                {
+                    featureType: "road",
+                    elementType: "geometry",
+                    stylers: [{ color: "#38414e" }],
+                },
+                {
+                    featureType: "road",
+                    elementType: "geometry.stroke",
+                    stylers: [{ color: "#212a37" }],
+                },
+                {
+                    featureType: "road",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#9ca5b3" }],
+                },
+                {
+                    featureType: "road.highway",
+                    elementType: "geometry",
+                    stylers: [{ color: "#746855" }],
+                },
+                {
+                    featureType: "road.highway",
+                    elementType: "geometry.stroke",
+                    stylers: [{ color: "#1f2835" }],
+                },
+                {
+                    featureType: "road.highway",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#f3d19c" }],
+                },
+                {
+                    featureType: "transit",
+                    elementType: "geometry",
+                    stylers: [{ color: "#2f3948" }],
+                },
+                {
+                    featureType: "transit.station",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#d59563" }],
+                },
+                {
+                    featureType: "water",
+                    elementType: "geometry",
+                    stylers: [{ color: "#17263c" }],
+                },
+                {
+                    featureType: "water",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#515c6d" }],
+                },
+                {
+                    featureType: "water",
+                    elementType: "labels.text.stroke",
+                    stylers: [{ color: "#17263c" }],
+                },
+            ];
+
+            // Initialize the Map
+            const mapElement = document.getElementById('map-canvas');
+            if (mapElement) {
+                 try {
+                    map = new google.maps.Map(mapElement, {
+                        center: guyanaCenter,
+                        zoom: 12, // Adjust zoom level as needed
+                        mapTypeId: 'roadmap',
+                        styles: mapStyles, // Apply dark theme styles
+                        disableDefaultUI: true, // Optional: hide default controls
+                        zoomControl: true,
+                        streetViewControl: false,
+                        mapTypeControl: false,
+                        fullscreenControl: false
+                    });
+                    console.log("Map initialized.");
+                 } catch (error) {
+                     console.error("Error initializing Google Map:", error);
+                     showConfirmation("Could not display the map.", true);
+                 }
+            } else {
+                console.error("Map canvas element not found.");
+            }
+
+            // Options for Autocomplete - restricting to Guyana
+            const autocompleteOptions = {
+                componentRestrictions: { country: "gy" }, 
+                fields: ["address_components", "geometry", "icon", "name", "formatted_address"], 
+                strictBounds: false, 
+            };
+
+            // Initialize Autocomplete for Booking Form
+            const pickupInput = document.getElementById('pickup-address');
+            const dropoffInput = document.getElementById('dropoff-address');
+
+            try {
+                if (pickupInput) {
+                    pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput, autocompleteOptions);
+                    pickupAutocomplete.addListener('place_changed', () => {
+                        const place = pickupAutocomplete.getPlace();
+                        if (place && place.formatted_address) {
+                            console.log("Pickup Place Selected:", place.formatted_address);
+                        } else {
+                            console.log("Autocomplete selection cleared or invalid place.");
+                        }
+                    });
+                } else {
+                    console.error("Pickup input field not found.");
+                }
+
+                if (dropoffInput) {
+                    dropoffAutocomplete = new google.maps.places.Autocomplete(dropoffInput, autocompleteOptions);
+                     dropoffAutocomplete.addListener('place_changed', () => {
+                        const place = dropoffAutocomplete.getPlace();
+                        if (place && place.formatted_address) {
+                            console.log("Dropoff Place Selected:", place.formatted_address);
+                        } else {
+                             console.log("Autocomplete selection cleared or invalid place.");
+                        }
+                    });
+                } else {
+                     console.error("Dropoff input field not found.");
+                }
+            } catch (error) {
+                console.error("Error initializing booking form autocomplete:", error);
+                showConfirmation("Error setting up address search. Please try again later.", true);
+            }
+
+
+            // Initialize Autocomplete for Schedule Modal Form
+            const schedulePickupInput = document.getElementById('schedule-pickup-address');
+            const scheduleDropoffInput = document.getElementById('schedule-dropoff-address');
+
+            try {
+                if (schedulePickupInput) {
+                     schedulePickupAutocomplete = new google.maps.places.Autocomplete(schedulePickupInput, autocompleteOptions);
+                     schedulePickupAutocomplete.addListener('place_changed', () => {
+                        const place = schedulePickupAutocomplete.getPlace();
+                        if (place && place.formatted_address) {
+                            console.log("Scheduled Pickup Place Selected:", place.formatted_address);
+                        } else {
+                            console.log("Autocomplete selection cleared or invalid place.");
+                        }
+                    });
+                } else {
+                     console.error("Schedule Pickup input field not found.");
+                }
+
+                 if (scheduleDropoffInput) {
+                     scheduleDropoffAutocomplete = new google.maps.places.Autocomplete(scheduleDropoffInput, autocompleteOptions);
+                     scheduleDropoffAutocomplete.addListener('place_changed', () => {
+                        const place = scheduleDropoffAutocomplete.getPlace();
+                        if (place && place.formatted_address) {
+                            console.log("Scheduled Dropoff Place Selected:", place.formatted_address);
+                        } else {
+                            console.log("Autocomplete selection cleared or invalid place.");
+                        }
+                    });
+                } else {
+                     console.error("Schedule Dropoff input field not found.");
+                }
+            } catch (error) {
+                 console.error("Error initializing schedule form autocomplete:", error);
+            }
+
+        } 
+
+
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        const bookingForm = document.getElementById('booking-form');
+        const confirmationMessage = document.getElementById('confirmation-message');
+        const confirmationText = document.getElementById('confirmation-text');
+        const loginSignupBtn = document.getElementById('login-signup-btn');
+        const joinRewardsBtn = document.getElementById('join-rewards-btn');
+        const accountModal = document.getElementById('account-modal');
+        const scheduleModal = document.getElementById('schedule-modal');
+        const scheduleRideLink = document.getElementById('schedule-ride-link');
+        const scheduleRideNav = document.getElementById('schedule-ride-nav');
+        const scheduleForm = document.getElementById('schedule-form');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+
+
+        function showConfirmation(message, isError = false) {
+            confirmationText.textContent = message;
+            confirmationMessage.classList.remove('hide');
+            confirmationMessage.classList.add('show');
+
+            if(isError) {
+                confirmationMessage.classList.remove('bg-green-600');
+                confirmationMessage.classList.add('bg-red-600');
+            } else {
+                 confirmationMessage.classList.remove('bg-red-600');
+                 confirmationMessage.classList.add('bg-green-600');
+            }
+
+            setTimeout(() => {
+                 confirmationMessage.classList.remove('show');
+                 confirmationMessage.classList.add('hide');
+            }, 3000);
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex'; 
+                document.body.style.overflow = 'hidden'; 
+            }
+        }
+
+        function closeModal(modalId) {
+             const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = ''; 
+            }
+        }
+
+        function switchTab(tabName) {
+            const loginBtn = document.querySelector('#account-modal button[onclick="switchTab(\'login\')"]');
+            const signupBtn = document.querySelector('#account-modal button[onclick="switchTab(\'signup\')"]');
+            
+            if (!loginBtn || !signupBtn) return;
+
+            if (tabName === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginBtn.classList.add('text-primary-400', 'border-primary-400');
+                loginBtn.classList.remove('text-gray-400', 'hover:text-primary-300');
+                signupBtn.classList.add('text-gray-400', 'hover:text-primary-300');
+                signupBtn.classList.remove('text-primary-400', 'border-primary-400');
+
+            } else if (tabName === 'signup') {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                signupBtn.classList.add('text-primary-400', 'border-primary-400');
+                signupBtn.classList.remove('text-gray-400', 'hover:text-primary-300');
+                loginBtn.classList.add('text-gray-400', 'hover:text-primary-300');
+                loginBtn.classList.remove('text-primary-400', 'border-primary-400');
+            }
+        }
+
+
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', (e) => {
+                e.preventDefault(); 
+                const pickup = document.getElementById('pickup-address').value;
+                const dropoff = document.getElementById('dropoff-address').value;
+
+                if (pickup && dropoff) {
+                    console.log('Booking submitted:', { pickup, dropoff });
+                    showConfirmation(`Finding your ride from ${pickup} to ${dropoff}...`);
+                    bookingForm.reset();
+                } else {
+                    showConfirmation('Please enter both pickup and dropoff locations.', true); 
+                }
+            });
+        }
+
+        if (scheduleForm) {
+            scheduleForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const pickup = document.getElementById('schedule-pickup-address').value;
+                const dropoff = document.getElementById('schedule-dropoff-address').value;
+                const date = document.getElementById('schedule-date').value;
+                const time = document.getElementById('schedule-time').value;
+
+                if (pickup && dropoff && date && time) {
+                    console.log('Scheduling submitted:', { pickup, dropoff, date, time });
+                    closeModal('schedule-modal');
+                    showConfirmation(`Ride scheduled for ${date} at ${time}!`);
+                    scheduleForm.reset();
+                } else {
+                     alert('Please fill in all required fields (including selecting valid addresses) for scheduling.');
+                }
+            });
+        }
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                console.log('Login attempt');
+                closeModal('account-modal');
+                showConfirmation('Logged in successfully! (Demo)');
+                loginForm.reset();
+            });
+        }
+
+        if (signupForm) {
+            signupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                console.log('Sign up attempt');
+                closeModal('account-modal');
+                showConfirmation('Account created successfully! (Demo)');
+                signupForm.reset();
+            });
+        }
+
+        if (loginSignupBtn) {
+            loginSignupBtn.addEventListener('click', () => openModal('account-modal'));
+        }
+        if (joinRewardsBtn) {
+            joinRewardsBtn.addEventListener('click', () => openModal('account-modal'));
+        }
+
+        if (scheduleRideLink) {
+            scheduleRideLink.addEventListener('click', (e) => {
+                 e.preventDefault();
+                 openModal('schedule-modal');
+            });
+        }
+         if (scheduleRideNav) {
+             scheduleRideNav.addEventListener('click', (e) => {
+                 e.preventDefault();
+                 openModal('schedule-modal');
+             });
+         }
+
+        window.addEventListener('click', (event) => {
+            if (event.target == accountModal) {
+                closeModal('account-modal');
+            }
+             if (event.target == scheduleModal) {
+                closeModal('schedule-modal');
+            }
+        });
+
+        const animatedElements = document.querySelectorAll('.fade-in');
+        function checkFadeIn() {
+            const triggerBottom = window.innerHeight * 0.9; 
+            animatedElements.forEach(el => {
+                const boxTop = el.getBoundingClientRect().top;
+                if (boxTop < triggerBottom) {
+                    if (el.style.opacity !== '1') {
+                         el.style.opacity = '1';
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkFadeIn);
+        window.addEventListener('load', checkFadeIn);
+
+        window.initMap = initMap;
+
+    </script>
+
+</body>
+</html>
