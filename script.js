@@ -6,6 +6,10 @@ let isGoogleMapsLoaded = false;
 let currentRideId = null;
 let offlineMode = false;
 
+// Account management variables
+let isLoggedIn = false;
+let currentUser = null;
+
 // --- Constants ---
 const FARE_BASE_RATES = {
     standard: 1000,
@@ -902,6 +906,362 @@ function initScheduleForm() {
     }
 }
 
+// --- Account Management Functions ---
+
+// Function to update UI based on login state
+function updateUIForLoginState() {
+    const loginButtons = document.querySelectorAll('#login-signup-btn, #login-signup-btn-mobile');
+    const accountDropdowns = document.querySelectorAll('.account-dropdown');
+    const userDisplayNames = document.querySelectorAll('.user-display-name');
+    
+    if (isLoggedIn && currentUser) {
+        // Hide login buttons
+        loginButtons.forEach(btn => btn.classList.add('hidden'));
+        
+        // Show account dropdowns
+        accountDropdowns.forEach(dropdown => {
+            dropdown.classList.remove('hidden');
+            
+            // Update user display name
+            const displayNameElement = dropdown.querySelector('.user-display-name');
+            if (displayNameElement) {
+                displayNameElement.textContent = currentUser.name || currentUser.email;
+            }
+        });
+        
+        // Update all user display name elements
+        userDisplayNames.forEach(el => {
+            el.textContent = currentUser.name || currentUser.email;
+        });
+    } else {
+        // Show login buttons
+        loginButtons.forEach(btn => btn.classList.remove('hidden'));
+        
+        // Hide account dropdowns
+        accountDropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
+    }
+}
+
+// Function to handle login
+function handleLogin(userData) {
+    isLoggedIn = true;
+    currentUser = userData;
+    
+    // Store user info in localStorage for persistence
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('currentUser', JSON.stringify(userData));
+    
+    // Update UI
+    updateUIForLoginState();
+}
+
+// Function to handle logout
+function handleLogout() {
+    isLoggedIn = false;
+    currentUser = null;
+    
+    // Clear localStorage
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+    
+    // Update UI
+    updateUIForLoginState();
+    
+    // Show confirmation
+    showConfirmation('Logged out successfully.');
+}
+
+// Function to check if user is logged in from localStorage
+function checkLoginStatus() {
+    const storedLoginStatus = localStorage.getItem('isLoggedIn');
+    const storedUser = localStorage.getItem('currentUser');
+    
+    if (storedLoginStatus === 'true' && storedUser) {
+        try {
+            isLoggedIn = true;
+            currentUser = JSON.parse(storedUser);
+            updateUIForLoginState();
+        } catch (error) {
+            console.error('Error parsing stored user data:', error);
+            handleLogout(); // Reset login state if data is invalid
+        }
+    }
+}
+
+// Account Dropdown Toggle
+function toggleAccountDropdown() {
+    const accountDropdownMenu = document.getElementById('account-dropdown-menu');
+    if (accountDropdownMenu) {
+        const isVisible = !accountDropdownMenu.classList.contains('hidden');
+        
+        if (isVisible) {
+            accountDropdownMenu.classList.add('hidden');
+        } else {
+            accountDropdownMenu.classList.remove('hidden');
+            
+            // Add outside click listener
+            setTimeout(() => {
+                document.addEventListener('click', closeAccountDropdownOnClickOutside);
+            }, 10);
+        }
+    }
+}
+
+// Close account dropdown when clicking outside
+function closeAccountDropdownOnClickOutside(e) {
+    const accountDropdownBtn = document.getElementById('account-dropdown-btn');
+    const accountDropdownMenu = document.getElementById('account-dropdown-menu');
+    
+    if (accountDropdownBtn && accountDropdownMenu && 
+        !accountDropdownBtn.contains(e.target) && 
+        !accountDropdownMenu.contains(e.target)) {
+        
+        accountDropdownMenu.classList.add('hidden');
+        document.removeEventListener('click', closeAccountDropdownOnClickOutside);
+    }
+}
+
+// Toggle Mobile Account Menu
+function toggleMobileAccountMenu() {
+    const mobileAccountMenu = document.getElementById('mobile-account-menu');
+    if (mobileAccountMenu) {
+        mobileAccountMenu.classList.toggle('hidden');
+    }
+}
+
+// Switch Account Dashboard Tabs
+function switchAccountDashboardTab(tabName) {
+    // Get all tab buttons and content
+    const tabBtns = {
+        profile: document.getElementById('profile-tab-btn'),
+        rides: document.getElementById('rides-tab-btn'),
+        places: document.getElementById('places-tab-btn'),
+        payment: document.getElementById('payment-tab-btn')
+    };
+    
+    const tabContents = {
+        profile: document.getElementById('profile-tab-content'),
+        rides: document.getElementById('rides-tab-content'),
+        places: document.getElementById('places-tab-content'),
+        payment: document.getElementById('payment-tab-content')
+    };
+    
+    // Hide all tabs and remove active classes
+    Object.values(tabContents).forEach(content => {
+        if (content) content.classList.add('hidden');
+    });
+    
+    Object.values(tabBtns).forEach(btn => {
+        if (btn) {
+            btn.classList.remove('text-primary-400', 'border-primary-400');
+            btn.classList.add('text-gray-400', 'hover:text-primary-300', 'border-transparent');
+            btn.setAttribute('aria-selected', 'false');
+        }
+    });
+    
+    // Show the selected tab
+    if (tabContents[tabName]) {
+        tabContents[tabName].classList.remove('hidden');
+    }
+    
+    // Set the active tab button
+    if (tabBtns[tabName]) {
+        tabBtns[tabName].classList.add('text-primary-400', 'border-primary-400');
+        tabBtns[tabName].classList.remove('text-gray-400', 'hover:text-primary-300', 'border-transparent');
+        tabBtns[tabName].setAttribute('aria-selected', 'true');
+    }
+}
+
+// Fill profile form with user data
+function fillProfileForm() {
+    if (currentUser) {
+        const nameInput = document.getElementById('profile-name');
+        const emailInput = document.getElementById('profile-email');
+        const phoneInput = document.getElementById('profile-phone');
+        
+        if (nameInput) nameInput.value = currentUser.name || '';
+        if (emailInput) emailInput.value = currentUser.email || '';
+        if (phoneInput) phoneInput.value = currentUser.phone || '';
+    }
+}
+
+// Setup account-related event listeners
+function setupAccountEventListeners() {
+    // Account dropdown toggle
+    const accountDropdownBtn = document.getElementById('account-dropdown-btn');
+    if (accountDropdownBtn) {
+        accountDropdownBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleAccountDropdown();
+        });
+    }
+    
+    // Mobile account menu toggle
+    const mobileAccountDropdownBtn = document.getElementById('mobile-account-dropdown-btn');
+    if (mobileAccountDropdownBtn) {
+        mobileAccountDropdownBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMobileAccountMenu();
+        });
+    }
+    
+    // Logout buttons
+    const logoutLinks = document.querySelectorAll('#logout-link, #mobile-logout-link');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleLogout();
+        });
+    });
+    
+    // Account dashboard tab buttons
+    const profileTabBtn = document.getElementById('profile-tab-btn');
+    const ridesTabBtn = document.getElementById('rides-tab-btn');
+    const placesTabBtn = document.getElementById('places-tab-btn');
+    const paymentTabBtn = document.getElementById('payment-tab-btn');
+    
+    if (profileTabBtn) {
+        profileTabBtn.addEventListener('click', () => switchAccountDashboardTab('profile'));
+    }
+    
+    if (ridesTabBtn) {
+        ridesTabBtn.addEventListener('click', () => switchAccountDashboardTab('rides'));
+    }
+    
+    if (placesTabBtn) {
+        placesTabBtn.addEventListener('click', () => switchAccountDashboardTab('places'));
+    }
+    
+    if (paymentTabBtn) {
+        paymentTabBtn.addEventListener('click', () => switchAccountDashboardTab('payment'));
+    }
+    
+    // View Profile links
+    const viewProfileLinks = document.querySelectorAll('#view-profile-link, #mobile-view-profile-link');
+    viewProfileLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('account-dashboard-modal');
+            switchAccountDashboardTab('profile');
+            fillProfileForm();
+        });
+    });
+    
+    // Ride History links
+    const rideHistoryLinks = document.querySelectorAll('#ride-history-link, #mobile-ride-history-link');
+    rideHistoryLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('account-dashboard-modal');
+            switchAccountDashboardTab('rides');
+        });
+    });
+    
+    // Saved Places links
+    const savedPlacesLinks = document.querySelectorAll('#saved-places-link, #mobile-saved-places-link');
+    savedPlacesLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('account-dashboard-modal');
+            switchAccountDashboardTab('places');
+        });
+    });
+    
+    // Payment Methods links
+    const paymentMethodsLinks = document.querySelectorAll('#payment-methods-link, #mobile-payment-methods-link');
+    paymentMethodsLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('account-dashboard-modal');
+            switchAccountDashboardTab('payment');
+        });
+    });
+    
+    // Profile form submission
+    const profileForm = document.getElementById('profile-form');
+    if (profileForm) {
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const phone = document.getElementById('profile-phone').value.trim();
+            
+            if (!name) {
+                showConfirmation('Please enter your name.', true);
+                return;
+            }
+            
+            if (!email || !isValidEmail(email)) {
+                showConfirmation('Please enter a valid email address.', true);
+                return;
+            }
+            
+            // Update user data
+            currentUser = {
+                ...currentUser,
+                name,
+                email,
+                phone
+            };
+            
+            // Update local storage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Update UI
+            updateUIForLoginState();
+            
+            // Show confirmation
+            showConfirmation('Profile updated successfully!');
+        });
+    }
+    
+    // Add Place form submission
+    const addPlaceForm = document.getElementById('add-place-form');
+    if (addPlaceForm) {
+        addPlaceForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('place-name').value.trim();
+            const address = document.getElementById('place-address').value.trim();
+            
+            if (!name) {
+                showConfirmation('Please enter a place name.', true);
+                return;
+            }
+            
+            if (!address) {
+                showConfirmation('Please enter an address.', true);
+                return;
+            }
+            
+            // In a real app, this would save to the user's account
+            showConfirmation(`Added "${name}" to your saved places.`);
+            addPlaceForm.reset();
+        });
+    }
+    
+    // Add Payment Method button
+    const addPaymentMethodBtn = document.getElementById('add-payment-method-btn');
+    if (addPaymentMethodBtn) {
+        addPaymentMethodBtn.addEventListener('click', () => {
+            // In a real app, this would open a payment method form
+            showConfirmation('Payment method functionality would be integrated with a payment processor.', true);
+        });
+    }
+    
+    // Account dashboard modal overlay
+    const accountDashboardModalOverlay = document.getElementById('account-dashboard-modal-overlay');
+    if (accountDashboardModalOverlay) {
+        accountDashboardModalOverlay.addEventListener('click', (e) => {
+            if (e.target === accountDashboardModalOverlay) {
+                closeModal('account-dashboard-modal');
+            }
+        });
+    }
+}
+
 // --- Event Listeners Setup ---
 function setupEventListeners() {
     // Set current year in footer
@@ -934,7 +1294,7 @@ function setupEventListeners() {
         });
     }
     
-    // Login form submission
+    // Login form submission - UPDATED FOR ACCOUNT MANAGEMENT
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -946,6 +1306,19 @@ function setupEventListeners() {
                 setTimeout(() => {
                     hideLoadingIndicator();
                     closeModal('account-modal');
+                    
+                    // Create user data (in a real app, this would come from the backend)
+                    const userData = {
+                        id: 'user-' + Date.now(),
+                        email: formData.email,
+                        name: formData.email.split('@')[0], // Simple display name from email
+                        phone: '+592-123-4567', // Default phone
+                        created: new Date().toISOString()
+                    };
+                    
+                    // Handle login
+                    handleLogin(userData);
+                    
                     showConfirmation('Logged in successfully!');
                     loginForm.reset();
                 }, 1500);
@@ -953,7 +1326,7 @@ function setupEventListeners() {
         });
     }
     
-    // Signup form submission
+    // Signup form submission - UPDATED FOR ACCOUNT MANAGEMENT
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
         signupForm.addEventListener('submit', (e) => {
@@ -965,6 +1338,19 @@ function setupEventListeners() {
                 setTimeout(() => {
                     hideLoadingIndicator();
                     closeModal('account-modal');
+                    
+                    // Create user data (in a real app, this would come from the backend)
+                    const userData = {
+                        id: 'user-' + Date.now(),
+                        email: formData.email,
+                        name: formData.name,
+                        phone: formData.phone,
+                        created: new Date().toISOString()
+                    };
+                    
+                    // Handle login after successful registration
+                    handleLogin(userData);
+                    
                     showConfirmation('Account created successfully!');
                     signupForm.reset();
                 }, 1500);
@@ -1058,8 +1444,10 @@ function setupEventListeners() {
             const modal = btn.closest('#account-modal') 
                 ? 'account-modal' 
                 : btn.closest('#schedule-modal') 
-                    ? 'schedule-modal' 
-                    : null;
+                    ? 'schedule-modal'
+                    : btn.closest('#account-dashboard-modal')
+                        ? 'account-dashboard-modal'
+                        : null;
             
             if (modal) {
                 closeModal(modal);
@@ -1180,6 +1568,12 @@ function setupEventListeners() {
         observeElements();
         checkNetworkStatus();
     }, 500);
+    
+    // Set up account-related event listeners
+    setupAccountEventListeners();
+    
+    // Check login status
+    checkLoginStatus();
 }
 
 // --- Document Ready Event Listener ---
