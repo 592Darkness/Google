@@ -471,7 +471,27 @@ function toggleOfflineAlert(isOffline) {
     }
 }
 
-// FIXED Modal Functions - Properly implemented to ensure popups work correctly
+// FIXED: Safe modal opening function
+function safeOpenModal(modalId) {
+    console.log(`Attempting to open modal: ${modalId}`);
+    const modal = document.getElementById(modalId);
+    if (!modal) {
+        console.error(`Modal with ID "${modalId}" not found!`);
+        showConfirmation(`There was an error opening the requested feature. Please try again.`, true);
+        return false;
+    }
+    
+    try {
+        openModal(modalId);
+        return true;
+    } catch (error) {
+        console.error(`Error opening modal ${modalId}:`, error);
+        showConfirmation(`There was an error opening the requested feature. Please try again.`, true);
+        return false;
+    }
+}
+
+// Modal Functions - Properly implemented to ensure popups work correctly
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -1029,8 +1049,10 @@ function toggleMobileAccountMenu() {
     }
 }
 
-// Switch Account Dashboard Tabs
+// FIXED: Switch Account Dashboard Tabs with improved error handling
 function switchAccountDashboardTab(tabName) {
+    console.log(`Switching to tab: ${tabName}`);
+    
     // Get all tab buttons and content
     const tabBtns = {
         profile: document.getElementById('profile-tab-btn'),
@@ -1045,6 +1067,16 @@ function switchAccountDashboardTab(tabName) {
         places: document.getElementById('places-tab-content'),
         payment: document.getElementById('payment-tab-content')
     };
+    
+    // Validate all elements exist
+    let missingElements = [];
+    if (!tabBtns[tabName]) missingElements.push(`${tabName} tab button`);
+    if (!tabContents[tabName]) missingElements.push(`${tabName} tab content`);
+    
+    if (missingElements.length > 0) {
+        console.error(`Cannot switch tabs - missing elements: ${missingElements.join(', ')}`);
+        return;
+    }
     
     // Hide all tabs and remove active classes
     Object.values(tabContents).forEach(content => {
@@ -1070,6 +1102,8 @@ function switchAccountDashboardTab(tabName) {
         tabBtns[tabName].classList.remove('text-gray-400', 'hover:text-primary-300', 'border-transparent');
         tabBtns[tabName].setAttribute('aria-selected', 'true');
     }
+    
+    console.log(`Successfully switched to ${tabName} tab`);
 }
 
 // Fill profile form with user data
@@ -1137,44 +1171,64 @@ function setupAccountEventListeners() {
         paymentTabBtn.addEventListener('click', () => switchAccountDashboardTab('payment'));
     }
     
-    // View Profile links
+    // FIXED: View Profile links with improved error handling
     const viewProfileLinks = document.querySelectorAll('#view-profile-link, #mobile-view-profile-link');
     viewProfileLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            openModal('account-dashboard-modal');
-            switchAccountDashboardTab('profile');
-            fillProfileForm();
+            if (safeOpenModal('account-dashboard-modal')) {
+                try {
+                    switchAccountDashboardTab('profile');
+                    fillProfileForm();
+                } catch (error) {
+                    console.error('Error switching to profile tab:', error);
+                }
+            }
         });
     });
     
-    // Ride History links
+    // FIXED: Ride History links with improved error handling
     const rideHistoryLinks = document.querySelectorAll('#ride-history-link, #mobile-ride-history-link');
     rideHistoryLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            openModal('account-dashboard-modal');
-            switchAccountDashboardTab('rides');
+            if (safeOpenModal('account-dashboard-modal')) {
+                try {
+                    switchAccountDashboardTab('rides');
+                } catch (error) {
+                    console.error('Error switching to rides tab:', error);
+                }
+            }
         });
     });
     
-    // Saved Places links
+    // FIXED: Saved Places links with improved error handling
     const savedPlacesLinks = document.querySelectorAll('#saved-places-link, #mobile-saved-places-link');
     savedPlacesLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            openModal('account-dashboard-modal');
-            switchAccountDashboardTab('places');
+            if (safeOpenModal('account-dashboard-modal')) {
+                try {
+                    switchAccountDashboardTab('places');
+                } catch (error) {
+                    console.error('Error switching to places tab:', error);
+                }
+            }
         });
     });
     
-    // Payment Methods links
+    // FIXED: Payment Methods links with improved error handling
     const paymentMethodsLinks = document.querySelectorAll('#payment-methods-link, #mobile-payment-methods-link');
     paymentMethodsLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            openModal('account-dashboard-modal');
-            switchAccountDashboardTab('payment');
+            if (safeOpenModal('account-dashboard-modal')) {
+                try {
+                    switchAccountDashboardTab('payment');
+                } catch (error) {
+                    console.error('Error switching to payment tab:', error);
+                }
+            }
         });
     });
     
@@ -1251,7 +1305,7 @@ function setupAccountEventListeners() {
         });
     }
     
-    // Account dashboard modal overlay
+    // FIXED: Account dashboard modal overlay
     const accountDashboardModalOverlay = document.getElementById('account-dashboard-modal-overlay');
     if (accountDashboardModalOverlay) {
         accountDashboardModalOverlay.addEventListener('click', (e) => {
@@ -1260,6 +1314,16 @@ function setupAccountEventListeners() {
             }
         });
     }
+    
+    // FIXED: Keyboard escape key to close modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const accountDashboard = document.getElementById('account-dashboard-modal');
+            if (accountDashboard && accountDashboard.style.display === 'flex') {
+                closeModal('account-dashboard-modal');
+            }
+        }
+    });
 }
 
 // --- Event Listeners Setup ---
@@ -1380,10 +1444,20 @@ function setupEventListeners() {
         });
     }
     
-    // FIXED: Handle rewards button that was breaking the site
+    // FIXED: Handle rewards button - check if logged in
     if (joinRewardsBtn) {
-        joinRewardsBtn.addEventListener('click', () => {
-            openModal('account-modal');
+        joinRewardsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isLoggedIn) {
+                // If already logged in, open the account dashboard to show rewards
+                safeOpenModal('account-dashboard-modal');
+                // Optionally, you could add a 'rewards' tab and switch to it
+                // For now, let's show them the ride history which would contain rewards
+                switchAccountDashboardTab('rides');
+            } else {
+                // If not logged in, show the login modal
+                openModal('account-modal');
+            }
         });
     }
     
