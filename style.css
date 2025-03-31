@@ -908,3 +908,248 @@ header.scrolled {
 #account-modal[style*="display: flex"], #schedule-modal[style*="display: flex"] {
   display: flex !important;
 }
+/* Account Dropdown Styles */
+.account-dropdown {
+    position: relative;
+}
+
+#account-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 41;
+    transition: all var(--duration-normal) ease;
+}
+
+#account-dropdown-btn:hover {
+    background-color: var(--color-primary-700);
+}
+
+#account-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 220px;
+    background-color: var(--color-gray-800);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-gray-700);
+    box-shadow: var(--shadow-xl);
+    z-index: 50;
+    overflow: hidden;
+    transform-origin: top right;
+    animation: dropdownFadeIn 0.2s ease forwards;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+#account-dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#account-dropdown-menu a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    color: var(--color-gray-300);
+    transition: all var(--duration-fast) ease;
+    font-size: var(--text-sm);
+}
+
+#account-dropdown-menu a:hover {
+    background-color: var(--color-gray-700);
+    color: var(--color-primary-400);
+}
+
+#account-dropdown-menu li {
+    border-bottom: 1px solid transparent;
+}
+
+#account-dropdown-menu li:last-child {
+    border-top: 1px solid var(--color-gray-700);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+/* Mobile Account Menu */
+#mobile-account-dropdown {
+    border-top: 1px solid var(--color-gray-700);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+#mobile-account-dropdown-btn {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+}
+
+#mobile-account-menu {
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease-in-out;
+}
+
+#mobile-account-menu.hidden {
+    max-height: 0;
+}
+
+#mobile-account-menu:not(.hidden) {
+    max-height: 300px;
+}
+
+/* Account Dashboard Styles */
+#account-dashboard-modal .modal-content {
+    max-width: 600px;
+    padding: 2rem;
+}
+
+#account-dashboard-modal .tab-content {
+    min-height: 300px;
+}
+
+/* Account Dashboard Tabs */
+#account-dashboard-modal [role="tab"] {
+    position: relative;
+    transition: all var(--duration-normal) ease;
+}
+
+#account-dashboard-modal [role="tab"]::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-primary-400);
+    transform: scaleX(0);
+    transition: transform var(--duration-normal) ease;
+}
+
+#account-dashboard-modal [role="tab"][aria-selected="true"]::after {
+    transform: scaleX(1);
+}
+
+/* Ride History Items */
+#rides-tab-content .bg-gray-700\/50 {
+    transition: all var(--duration-normal) ease;
+}
+
+#rides-tab-content .bg-gray-700\/50:hover {
+    background-color: rgba(75, 85, 99, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Saved Places Items */
+#places-tab-content .bg-gray-700\/50 {
+    transition: all var(--duration-normal) ease;
+}
+
+#places-tab-content .bg-gray-700\/50:hover {
+    background-color: rgba(75, 85, 99, 0.5);
+}
+
+#places-tab-content button {
+    opacity: 0.7;
+    transition: opacity var(--duration-fast) ease;
+}
+
+#places-tab-content .bg-gray-700\/50:hover button {
+    opacity: 1;
+}
+
+/* Payment Methods */
+#payment-tab-content .bg-gray-700\/50 {
+    transition: all var(--duration-normal) ease;
+}
+
+#payment-tab-content .bg-gray-700\/50:hover {
+    background-color: rgba(75, 85, 99, 0.5);
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+/* Badge Styles */
+.rounded-full {
+    border-radius: 9999px;
+}
+
+.bg-primary-100 {
+    background-color: var(--color-primary-50);
+}
+
+.text-primary-800 {
+    color: var(--color-primary-800);
+}
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.px-2\.5 {
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
+}
+
+.py-0\.5 {
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+}
+
+/* Profile Form Spacing */
+#profile-form {
+    margin-bottom: 1rem;
+}
+
+#profile-form .pt-4 {
+    padding-top: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    #account-dashboard-modal .flex {
+        flex-wrap: wrap;
+    }
+    
+    #account-dashboard-modal [role="tab"] {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.25rem;
+    }
+    
+    #account-dashboard-modal .modal-content {
+        padding: 1.5rem;
+        width: 95%;
+        margin: 2.5% auto;
+    }
+}
+
+@media (max-width: 640px) {
+    #account-dashboard-modal [role="tab"] {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.15rem;
+    }
+}
