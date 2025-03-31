@@ -422,6 +422,7 @@ header {
   transition: all var(--duration-normal) ease;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   height: 4rem; /* Fixed height for the header */
+  display: block !important; /* Force header to display */
 }
 
 header nav {
@@ -511,6 +512,8 @@ header.scrolled {
   background-color: rgba(0, 0, 0, 0.7); 
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  align-items: center; /* Fix: Center modals vertically */ 
+  justify-content: center; /* Fix: Center modals horizontally */
 }
 
 .modal-content {
@@ -790,6 +793,13 @@ header.scrolled {
   transform: scale(1.2);
 }
 
+/* Fixed Navigation Styles for Desktop */
+@media (min-width: 768px) {
+  header .hidden.md\:flex {
+    display: flex !important;
+  }
+}
+
 /* ===== Responsive Styles ===== */
 @media (max-width: 640px) {
   html {
@@ -889,53 +899,12 @@ header.scrolled {
 .translate-y-full {
   transform: translateY(100%);
 }
-/* Add these styles to fix the navigation */
 
-/* Force the header to display properly */
-header {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+/* IMPORTANT FIX FOR MODAL DISPLAY */
+#account-modal.items-center, #schedule-modal.items-center {
+  display: none;
 }
 
-/* Force desktop navigation to display on non-mobile screens */
-@media (min-width: 768px) {
-  header .hidden.md\:flex {
-    display: flex !important;
-  }
-}
-
-/* Ensure mobile navigation toggle works */
-#mobile-menu-btn {
-  display: block !important;
-}
-
-@media (min-width: 768px) {
-  #mobile-menu-btn {
-    display: none !important;
-  }
-}
-
-/* Make sure the navigation items are visible */
-header a, 
-header button {
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important; /* light gray color for better visibility */
-}
-
-/* Fix for any potential z-index issues */
-header {
-  z-index: 50 !important;
-}
-
-/* Ensure padding is correct */
-header .container {
-  padding-top: 0.75rem !important;
-  padding-bottom: 0.75rem !important;
-}
-
-/* Make sure the space below header is adequate */
-.h-16 {
-  height: 4rem !important;
+#account-modal[style*="display: flex"], #schedule-modal[style*="display: flex"] {
+  display: flex !important;
 }
