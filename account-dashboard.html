@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Salaam Rides - Account Dashboard. Manage your profile, rides, saved places, and payment methods.">
+    <title>Account Dashboard - Salaam Rides</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2310b981' d='M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z'/%3E%3C/svg%3E">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script> 
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+      // Tailwind Configuration
+      tailwind.config = {
+        darkMode: 'class', 
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              primary: { 
+                DEFAULT: '#10b981', 
+                '50': '#ecfdf5',
+                '100': '#d1fae5',
+                '200': '#a7f3d0',
+                '300': '#6ee7b7',
+                '400': '#34d399',
+                '500': '#10b981',
+                '600': '#059669',
+                '700': '#047857',
+                '800': '#065f46',
+                '900': '#064e3b',
+                '950': '#022c22',
+              },
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'fade-in': 'fadeIn 0.8s ease-out forwards',
+              'slide-up': 'slideUp 0.5s ease-out forwards',
+              'slide-in': 'slideIn 0.4s ease-out forwards',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              slideIn: {
+                '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                '100%': { transform: 'translateX(0)', opacity: '1' },
+              },
+            },
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans antialiased dark min-h-screen flex flex-col">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 z-0 opacity-10 pointer-events-none overflow-hidden">
+        <img src="islamic-pattern.svg" alt="" class="w-full h-full object-cover" aria-hidden="true">
+    </div>
+
+    <!-- Fixed Header with Navigation -->
+    <header class="bg-gray-900/95 backdrop-blur-md fixed top-0 left-0 right-0 z-40 border-b border-gray-700/50 shadow-md">
+        <div class="container mx-auto px-4 lg:px-6 flex justify-between items-center h-16">
+            <!-- Logo -->
+            <a href="index.html" class="text-2xl font-bold text-primary-400 hover:text-primary-300 transition-colors flex items-center" aria-label="Salaam Rides Guyana Home">
+                Salaam Rides <span class="text-xs font-normal text-gray-400 ml-1">Guyana</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="index.html" class="text-gray-300 hover:text-primary-400 transition duration-300">Home</a>
+                <a href="index.html#features" class="text-gray-300 hover:text-primary-400 transition duration-300">Features</a>
+                <a href="index.html#rewards" class="text-gray-300 hover:text-primary-400 transition duration-300">Rewards</a>
+                <a href="#" id="schedule-ride-nav" class="text-gray-300 hover:text-primary-400 transition duration-300">Schedule Ride</a>
+                
+                <!-- User Dropdown -->
+                <div class="relative">
+                    <button id="user-dropdown-btn" class="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg">
+                        <span class="lucide" aria-hidden="true">&#xebe4;</span>
+                        <span class="user-display-name">User</span>
+                        <span class="lucide text-xs" aria-hidden="true">&#xeaa0;</span>
+                    </button>
+                    <div id="user-dropdown-menu" class="absolute right-0 top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50 hidden">
+                        <ul class="py-2">
+                            <li class="border-b border-gray-700">
+                                <span class="block px-4 py-2 text-sm text-gray-400">Signed in as</span>
+                                <span class="block px-4 py-2 text-sm font-medium text-white user-display-name">User</span>
+                            </li>
+                            <li>
+                                <a href="index.html" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-primary-400 transition duration-300">
+                                    <span class="lucide mr-2" aria-hidden="true">&#xeb15;</span>
+                                    Book a Ride
+                                </a>
+                            </li>
+                            <li class="border-t border-gray-700 mt-2 pt-2">
+                                <a href="#" id="logout-link" class="block px-4 py-2 text-red-400 hover:bg-gray-700 hover:text-red-300 transition duration-300">
+                                    <span class="lucide mr-2" aria-hidden="true">&#xea7b;</span>
+                                    Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-gray-300 hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md p-1" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <span class="lucide text-3xl">&#xe9b2;</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800/95 backdrop-blur-md border-b border-gray-700/50 shadow-lg">
+            <div class="container mx-auto px-4 py-3 space-y-3">
+                <a href="index.html" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Home</a>
+                <a href="index.html#features" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Features</a>
+                <a href="index.html#rewards" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Rewards</a>
+                <a href="#" id="schedule-ride-nav-mobile" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">Schedule Ride</a>
+                <div class="border-t border-gray-700 mt-2 pt-2">
+                    <a href="#" id="mobile-logout-link" class="block text-red-400 hover:text-red-300 transition duration-300 py-2">
+                        <span class="lucide mr-2" aria-hidden="true">&#xea7b;</span>
+                        Log Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Spacer to prevent content from being hidden under fixed header -->
+    <div class="h-16 md:h-16"></div>
+
+    <!-- Account Dashboard Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-3xl font-bold text-white">Account Dashboard</h1>
+                <p class="text-gray-400">Welcome, <span class="user-display-name font-medium text-white">User</span></p>
+            </div>
+            
+            <!-- Dashboard Tabs -->
+            <div class="mb-8 border-b border-gray-700">
+                <div class="flex overflow-x-auto hide-scrollbar">
+                    <button type="button" id="profile-tab-btn" class="dashboard-tab active px-4 py-3 text-center font-medium text-primary-400 border-b-2 border-primary-400 whitespace-nowrap" aria-selected="true" role="tab">Profile</button>
+                    <button type="button" id="rides-tab-btn" class="dashboard-tab px-4 py-3 text-center font-medium text-gray-400 hover:text-primary-300 border-b-2 border-transparent whitespace-nowrap" aria-selected="false" role="tab">Ride History</button>
+                    <button type="button" id="places-tab-btn" class="dashboard-tab px-4 py-3 text-center font-medium text-gray-400 hover:text-primary-300 border-b-2 border-transparent whitespace-nowrap" aria-selected="false" role="tab">Saved Places</button>
+                    <button type="button" id="payment-tab-btn" class="dashboard-tab px-4 py-3 text-center font-medium text-gray-400 hover:text-primary-300 border-b-2 border-transparent whitespace-nowrap" aria-selected="false" role="tab">Payment Methods</button>
+                    <button type="button" id="rewards-tab-btn" class="dashboard-tab px-4 py-3 text-center font-medium text-gray-400 hover:text-primary-300 border-b-2 border-transparent whitespace-nowrap" aria-selected="false" role="tab">Rewards</button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="bg-gray-800 rounded-xl border border-gray-700 shadow-xl p-6 md:p-8">
+                <!-- Profile Tab Content -->
+                <div id="profile-tab-content" class="dashboard-content" role="tabpanel" aria-labelledby="profile-tab-btn">
+                    <h2 class="text-xl font-semibold text-white mb-6">Personal Information</h2>
+                    <form id="profile-form" class="space-y-6 max-w-2xl">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="profile-name" class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+                                <input type="text" id="profile-name" name="name" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="profile-email" class="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
+                                <input type="email" id="profile-email" name="email" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="profile-phone" class="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
+                                <input type="tel" id="profile-phone" name="phone" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="profile-language" class="block text-sm font-medium text-gray-300 mb-1">Preferred Language</label>
+                                <select id="profile-language" name="language" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="pt">Portuguese</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-700 pt-6">
+                            <h3 class="text-lg font-medium text-white mb-4">Notification Preferences</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="notify-email" name="notify_email" class="form-checkbox text-primary-500 focus:ring-primary-500 h-4 w-4 rounded" checked>
+                                    <span class="ml-2 text-gray-300">Email notifications</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="notify-sms" name="notify_sms" class="form-checkbox text-primary-500 focus:ring-primary-500 h-4 w-4 rounded" checked>
+                                    <span class="ml-2 text-gray-300">SMS notifications</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="notify-promotions" name="notify_promotions" class="form-checkbox text-primary-500 focus:ring-primary-500 h-4 w-4 rounded">
+                                    <span class="ml-2 text-gray-300">Promotional messages and offers</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4">
+                            <button type="submit" class="w-full md:w-auto bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-8 rounded-lg transition duration-300 shadow-md transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Ride History Tab Content -->
+                <div id="rides-tab-content" class="dashboard-content hidden" role="tabpanel" aria-labelledby="rides-tab-btn">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-white">Your Ride History</h2>
+                        <div>
+                            <select id="ride-history-filter" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                <option value="all">All Rides</option>
+                                <option value="month">Last 30 Days</option>
+                                <option value="completed">Completed</option>
+                                <option value="canceled">Canceled</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600 transition-all hover:bg-gray-700/80">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 class="font-medium text-white">Georgetown to Linden</h4>
+                                    <p class="text-gray-400 text-sm">March 29, 2025 · 10:32 AM</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-medium text-white">G$5,200</p>
+                                    <div class="flex items-center text-yellow-400 text-sm mt-1">
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2 text-sm">
+                                <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4b;</span>
+                                <div class="flex-1">
+                                    <p>Main Street, Georgetown</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2 text-sm">
+                                <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4a;</span>
+                                <div class="flex-1">
+                                    <p>Central Linden</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-3">
+                                <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Get Receipt</button>
+                                <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Book Again</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600 transition-all hover:bg-gray-700/80">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 class="font-medium text-white">Berbice to Georgetown</h4>
+                                    <p class="text-gray-400 text-sm">March 27, 2025 · 2:15 PM</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-medium text-white">G$8,400</p>
+                                    <div class="flex items-center text-yellow-400 text-sm mt-1">
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs text-gray-500" aria-hidden="true">&#xeae5;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2 text-sm">
+                                <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4b;</span>
+                                <div class="flex-1">
+                                    <p>New Amsterdam, Berbice</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2 text-sm">
+                                <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4a;</span>
+                                <div class="flex-1">
+                                    <p>Queenstown, Georgetown</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-3">
+                                <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Get Receipt</button>
+                                <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Book Again</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600 transition-all hover:bg-gray-700/80">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 class="font-medium text-white">Airport to Hotel</h4>
+                                    <p class="text-gray-400 text-sm">March 22, 2025 · 8:45 AM</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-medium text-white">G$3,600</p>
+                                    <div class="flex items-center text-yellow-400 text-sm mt-1">
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                        <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2 text-sm">
+                                <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4b;</span>
+                                <div class="flex-1">
+                                    <p>Cheddi Jagan International Airport</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2 text-sm">
+                                <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4a;</span>
+                                <div class="flex-1">
+                                    <p>Pegasus Hotel, Georgetown</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-3">
+                                <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Get Receipt</button>
+                                <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Book Again</button>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center py-4">
+                            <button class="text-primary-400 hover:text-primary-300 transition-colors">Load More</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Saved Places Tab Content -->
+                <div id="places-tab-content" class="dashboard-content hidden" role="tabpanel" aria-labelledby="places-tab-btn">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-white">Saved Places</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium text-white">Home</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-primary-400 transition-colors" title="Edit">
+                                        <span class="lucide" aria-hidden="true">&#xea05;</span>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-red-400 transition-colors" title="Delete">
+                                        <span class="lucide" aria-hidden="true">&#xea76;</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-300">123 Main Street, Georgetown</p>
+                        </div>
+                        
+                        <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium text-white">Work</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-primary-400 transition-colors" title="Edit">
+                                        <span class="lucide" aria-hidden="true">&#xea05;</span>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-red-400 transition-colors" title="Delete">
+                                        <span class="lucide" aria-hidden="true">&#xea76;</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-300">Pegasus Hotel, Georgetown</p>
+                        </div>
+                        
+                        <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium text-white">Family</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-primary-400 transition-colors" title="Edit">
+                                        <span class="lucide" aria-hidden="true">&#xea05;</span>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-red-400 transition-colors" title="Delete">
+                                        <span class="lucide" aria-hidden="true">&#xea76;</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-300">45 Quamina Street, Georgetown</p>
+                        </div>
+                        
+                        <!-- Add New Place Card -->
+                        <div class="bg-gray-700/30 rounded-lg p-4 border border-dashed border-gray-600">
+                            <h4 class="font-medium text-white mb-4">Add New Place</h4>
+                            <form id="add-place-form">
+                                <div class="space-y-3">
+                                    <div>
+                                        <label for="place-name" class="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                                        <input type="text" id="place-name" name="name" placeholder="e.g. Home, Work, Gym" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    </div>
+                                    <div>
+                                        <label for="place-address" class="block text-sm font-medium text-gray-300 mb-1">Address</label>
+                                        <input type="text" id="place-address" name="address" placeholder="Enter location" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    </div>
+                                    <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Add Place</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Methods Tab Content -->
+                <div id="payment-tab-content" class="dashboard-content hidden" role="tabpanel" aria-labelledby="payment-tab-btn">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-white">Payment Methods</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center">
+                                    <span class="lucide text-xl mr-3" aria-hidden="true">&#xeaa9;</span>
+                                    <h4 class="font-medium text-white">Visa •••• 4242</h4>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-primary-400 hover:text-primary-300 transition-colors" title="Edit">
+                                        <span class="lucide" aria-hidden="true">&#xea05;</span>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-red-400 transition-colors" title="Remove">
+                                        <span class="lucide" aria-hidden="true">&#xea76;</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm">Expires 05/2026</p>
+                            <div class="mt-2">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                                    Default
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center">
+                                    <span class="lucide text-xl mr-3" aria-hidden="true">&#xeaa8;</span>
+                                    <h4 class="font-medium text-white">Cash</h4>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-primary-400 hover:text-primary-300 transition-colors" title="Make Default">
+                                        <span class="lucide" aria-hidden="true">&#xe96c;</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm">Pay directly to driver</p>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <button id="add-payment-method-btn" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 border border-gray-600 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800 flex items-center justify-center">
+                                <span class="lucide mr-2" aria-hidden="true">&#xea82;</span>
+                                Add Payment Method
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rewards Tab Content -->
+                <div id="rewards-tab-content" class="dashboard-content hidden" role="tabpanel" aria-labelledby="rewards-tab-btn">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="md:w-1/3">
+                            <div class="bg-gradient-to-br from-primary-700 to-primary-900 p-6 rounded-xl shadow-lg border border-primary-600">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-semibold text-white">Your Points</h3>
+                                    <span class="lucide text-2xl text-yellow-400" aria-hidden="true">&#xeae5;</span>
+                                </div>
+                                <div class="text-3xl font-bold text-white mb-1">2,450</div>
+                                <p class="text-primary-200 text-sm">Points earned</p>
+                                <div class="mt-6">
+                                    <button class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-medium py-2 px-4 rounded-lg transition duration-300 shadow-md">Redeem Points</button>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                                <h4 class="font-medium text-white mb-3">How to Earn Points</h4>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li class="flex items-start space-x-2">
+                                        <span class="lucide text-primary-400 flex-shrink-0" aria-hidden="true">&#xe96c;</span>
+                                        <span>100 points for every completed ride</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <span class="lucide text-primary-400 flex-shrink-0" aria-hidden="true">&#xe96c;</span>
+                                        <span>500 bonus points for referring a friend</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <span class="lucide text-primary-400 flex-shrink-0" aria-hidden="true">&#xe96c;</span>
+                                        <span>200 points for each airport ride</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="md:w-2/3">
+                            <h3 class="text-lg font-semibold text-white mb-4">Available Rewards</h3>
+                            <div class="space-y-4">
+                                <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600 flex flex-col md:flex-row justify-between">
+                                    <div>
+                                        <h4 class="font-medium text-white">10% Off Your Next Ride</h4>
+                                        <p class="text-gray-400 text-sm mt-1">Get a discount on your next ride anywhere in Guyana</p>
+                                    </div>
+                                    <div class="mt-3 md:mt-0 flex items-center">
+                                        <span class="text-yellow-400 font-semibold mr-3">500 points</span>
+                                        <button class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-1 px-4 rounded-lg transition duration-300 shadow-md text-sm">Redeem</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600 flex flex-col md:flex-row justify-between">
+                                    <div>
+                                        <h4 class="font-medium text-white">Free Airport Transfer</h4>
+                                        <p class="text-gray-400 text-sm mt-1">One free ride to or from the Cheddi Jagan International Airport</p>
+                                    </div>
+                                    <div class="mt-3 md:mt-0 flex items-center">
+                                        <span class="text-yellow-400 font-semibold mr-3">1,500 points</span>
+                                        <button class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-1 px-4 rounded-lg transition duration-300 shadow-md text-sm">Redeem</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600 flex flex-col md:flex-row justify-between">
+                                    <div>
+                                        <h4 class="font-medium text-white">Premium Upgrade</h4>
+                                        <p class="text-gray-400 text-sm mt-1">Upgrade any standard ride to premium at no extra cost</p>
+                                    </div>
+                                    <div class="mt-3 md:mt-0 flex items-center">
+                                        <span class="text-yellow-400 font-semibold mr-3">800 points</span>
+                                        <button class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-1 px-4 rounded-lg transition duration-300 shadow-md text-sm">Redeem</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600 flex flex-col md:flex-row justify-between">
+                                    <div>
+                                        <h4 class="font-medium text-white">25% Off Long Distance</h4>
+                                        <p class="text-gray-400 text-sm mt-1">Get a discount on rides over 50km</p>
+                                    </div>
+                                    <div class="mt-3 md:mt-0 flex items-center">
+                                        <span class="text-yellow-400 font-semibold mr-3">1,200 points</span>
+                                        <button class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-1 px-4 rounded-lg transition duration-300 shadow-md text-sm">Redeem</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700/50 py-8 mt-auto">
+        <div class="container mx-auto px-4 md:flex md:justify-between md:items-center">
+            <div class="text-center md:text-left mb-6 md:mb-0">
+                <p class="text-gray-400">&copy; <span id="current-year"></span> Salaam Rides. All Rights Reserved.</p>
+                <p class="text-sm mt-2 text-gray-500">Serving Georgetown, Linden, Berbice, and all across Guyana.</p>
+            </div>
+            <div class="flex flex-wrap justify-center md:justify-end space-x-4">
+                <a href="#" class="hover:text-primary-400 transition duration-300 text-gray-400">Privacy Policy</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-primary-400 transition duration-300 text-gray-400">Terms of Service</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-primary-400 transition duration-300 text-gray-400">Contact Us</a>
+            </div>
+        </div>
+        <div class="mt-6 text-center text-xs text-gray-600">
+            <p>For emergencies, please call our 24/7 hotline: +592-123-4567</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="confirmation-message" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-sm font-medium py-3 px-6 rounded-lg shadow-lg z-50 flex items-center space-x-2 opacity-0 transition-all duration-300">
+        <span class="lucide hidden" id="confirmation-icon" aria-hidden="true">&#xe96c;</span>
+        <span id="confirmation-text">Message</span>
+        <button id="close-notification" class="ml-2 text-white hover:text-white/80" aria-label="Close notification">
+            <span class="lucide text-sm" aria-hidden="true">&#xea76;</span>
+        </button>
+    </div>
+
+    <!-- Schedule Ride Modal -->
+    <div id="schedule-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="schedule-modal-overlay"></div>
+        <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700 max-w-lg w-full mx-auto relative z-10">
+            <button type="button" class="modal-close-btn text-gray-500 hover:text-primary-400 absolute right-4 top-4 focus:outline-none focus:text-primary-500" aria-label="Close modal">
+                <span class="lucide" aria-hidden="true">&#xea76;</span>
+            </button>
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center">Schedule Your Ride</h2>
+            <form id="schedule-form" class="space-y-4">
+                <!-- Pickup Location Input -->
+                <div class="relative">
+                    <label for="schedule-pickup-address" class="block text-sm font-medium text-gray-300 mb-1">Pickup Location</label>
+                    <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10" aria-hidden="true">&#xea4b;</span>
+                    <input type="text" id="schedule-pickup-address" name="pickup" required placeholder="Enter Pickup Location" class="w-full pl-10 pr-12 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <button type="button" id="use-current-location-schedule" title="Use Current Location" class="absolute right-3 top-[38px] transform -translate-y-1/2 text-gray-400 hover:text-primary-400 focus:outline-none transition-colors z-20 focus:ring-2 focus:ring-primary-500 rounded-full p-1" aria-label="Use your current location for pickup">
+                        <span class="lucide text-lg" aria-hidden="true">&#xe9cd;</span>
+                    </button>
+                </div>
+                <!-- Dropoff Location Input -->
+                <div class="relative">
+                    <label for="schedule-dropoff-address" class="block text-sm font-medium text-gray-300 mb-1">Dropoff Location</label>
+                    <span class="lucide absolute left-3 top-[38px] transform -translate-y-1/2 text-gray-400 text-lg z-10" aria-hidden="true">&#xea4a;</span>
+                    <input type="text" id="schedule-dropoff-address" name="dropoff" required placeholder="Enter Dropoff Location" class="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                <!-- Vehicle Type Selection -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Vehicle Type</label>
+                    <div class="flex flex-wrap gap-3">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center" tabindex="0" role="radio" aria-checked="true">
+                            <input type="radio" name="scheduleVehicleType" value="standard" class="form-radio text-primary-500 focus:ring-primary-500" checked>
+                            <span class="text-sm">Standard</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center" tabindex="0" role="radio" aria-checked="false">
+                            <input type="radio" name="scheduleVehicleType" value="suv" class="form-radio text-primary-500 focus:ring-primary-500">
+                            <span class="text-sm">SUV</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 bg-gray-700 rounded-lg border border-transparent hover:border-primary-500 transition duration-200 flex-1 justify-center" tabindex="0" role="radio" aria-checked="false">
+                            <input type="radio" name="scheduleVehicleType" value="premium" class="form-radio text-primary-500 focus:ring-primary-500">
+                            <span class="text-sm">Premium</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Date and Time Inputs -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="schedule-date" class="block text-sm font-medium text-gray-300 mb-1">Date</label>
+                        <input type="date" id="schedule-date" name="date" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none" style="color-scheme: dark;">
+                    </div>
+                    <div>
+                        <label for="schedule-time" class="block text-sm font-medium text-gray-300 mb-1">Time</label>
+                        <input type="time" id="schedule-time" name="time" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none" style="color-scheme: dark;">
+                    </div>
+                </div>
+                <!-- Notes Textarea -->
+                <div>
+                    <label for="schedule-notes" class="block text-sm font-medium text-gray-300 mb-1">Notes (Optional)</label>
+                    <textarea id="schedule-notes" name="notes" rows="2" placeholder="Any special instructions? e.g., Flight number" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"></textarea>
+                </div>
+                <!-- Est. Fare Display -->
+                <div id="schedule-fare-estimate" class="text-center text-gray-300 text-lg font-medium p-2 bg-gray-700/50 rounded-lg">
+                    <!-- Schedule fare will be displayed here -->
+                </div>
+                <!-- Schedule Ride Button -->
+                <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Schedule Ride</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay - Used during page transitions -->
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="flex flex-col items-center">
+            <div class="spinner-border animate-spin inline-block w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mb-4"></div>
+            <p class="text-xl text-white">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Offline Alert -->
+    <div id="offline-alert" class="fixed bottom-0 inset-x-0 bg-red-600 text-white p-3 text-center transform translate-y-full transition-transform duration-300 z-50">
+        <p class="flex items-center justify-center">
+            <span class="lucide mr-2" aria-hidden="true">&#xea0e;</span>
+            <span>You are currently offline. Some features may be unavailable.</span>
+        </p>
+    </div>
+
+    <!-- Dashboard Scripts -->
+    <script src="dashboard.js"></script>
+</body>
+</html>
