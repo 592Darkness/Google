@@ -471,26 +471,6 @@ function toggleOfflineAlert(isOffline) {
     }
 }
 
-// FIXED: Safe modal opening function
-function safeOpenModal(modalId) {
-    console.log(`Attempting to open modal: ${modalId}`);
-    const modal = document.getElementById(modalId);
-    if (!modal) {
-        console.error(`Modal with ID "${modalId}" not found!`);
-        showConfirmation(`There was an error opening the requested feature. Please try again.`, true);
-        return false;
-    }
-    
-    try {
-        openModal(modalId);
-        return true;
-    } catch (error) {
-        console.error(`Error opening modal ${modalId}:`, error);
-        showConfirmation(`There was an error opening the requested feature. Please try again.`, true);
-        return false;
-    }
-}
-
 // Modal Functions - Properly implemented to ensure popups work correctly
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
@@ -1049,283 +1029,6 @@ function toggleMobileAccountMenu() {
     }
 }
 
-// FIXED: Switch Account Dashboard Tabs with improved error handling
-function switchAccountDashboardTab(tabName) {
-    console.log(`Switching to tab: ${tabName}`);
-    
-    // Get all tab buttons and content
-    const tabBtns = {
-        profile: document.getElementById('profile-tab-btn'),
-        rides: document.getElementById('rides-tab-btn'),
-        places: document.getElementById('places-tab-btn'),
-        payment: document.getElementById('payment-tab-btn')
-    };
-    
-    const tabContents = {
-        profile: document.getElementById('profile-tab-content'),
-        rides: document.getElementById('rides-tab-content'),
-        places: document.getElementById('places-tab-content'),
-        payment: document.getElementById('payment-tab-content')
-    };
-    
-    // Validate all elements exist
-    let missingElements = [];
-    if (!tabBtns[tabName]) missingElements.push(`${tabName} tab button`);
-    if (!tabContents[tabName]) missingElements.push(`${tabName} tab content`);
-    
-    if (missingElements.length > 0) {
-        console.error(`Cannot switch tabs - missing elements: ${missingElements.join(', ')}`);
-        return;
-    }
-    
-    // Hide all tabs and remove active classes
-    Object.values(tabContents).forEach(content => {
-        if (content) content.classList.add('hidden');
-    });
-    
-    Object.values(tabBtns).forEach(btn => {
-        if (btn) {
-            btn.classList.remove('text-primary-400', 'border-primary-400');
-            btn.classList.add('text-gray-400', 'hover:text-primary-300', 'border-transparent');
-            btn.setAttribute('aria-selected', 'false');
-        }
-    });
-    
-    // Show the selected tab
-    if (tabContents[tabName]) {
-        tabContents[tabName].classList.remove('hidden');
-    }
-    
-    // Set the active tab button
-    if (tabBtns[tabName]) {
-        tabBtns[tabName].classList.add('text-primary-400', 'border-primary-400');
-        tabBtns[tabName].classList.remove('text-gray-400', 'hover:text-primary-300', 'border-transparent');
-        tabBtns[tabName].setAttribute('aria-selected', 'true');
-    }
-    
-    console.log(`Successfully switched to ${tabName} tab`);
-}
-
-// Fill profile form with user data
-function fillProfileForm() {
-    if (currentUser) {
-        const nameInput = document.getElementById('profile-name');
-        const emailInput = document.getElementById('profile-email');
-        const phoneInput = document.getElementById('profile-phone');
-        
-        if (nameInput) nameInput.value = currentUser.name || '';
-        if (emailInput) emailInput.value = currentUser.email || '';
-        if (phoneInput) phoneInput.value = currentUser.phone || '';
-    }
-}
-
-// Setup account-related event listeners
-function setupAccountEventListeners() {
-    // Account dropdown toggle
-    const accountDropdownBtn = document.getElementById('account-dropdown-btn');
-    if (accountDropdownBtn) {
-        accountDropdownBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleAccountDropdown();
-        });
-    }
-    
-    // Mobile account menu toggle
-    const mobileAccountDropdownBtn = document.getElementById('mobile-account-dropdown-btn');
-    if (mobileAccountDropdownBtn) {
-        mobileAccountDropdownBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMobileAccountMenu();
-        });
-    }
-    
-    // Logout buttons
-    const logoutLinks = document.querySelectorAll('#logout-link, #mobile-logout-link');
-    logoutLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            handleLogout();
-        });
-    });
-    
-    // Account dashboard tab buttons
-    const profileTabBtn = document.getElementById('profile-tab-btn');
-    const ridesTabBtn = document.getElementById('rides-tab-btn');
-    const placesTabBtn = document.getElementById('places-tab-btn');
-    const paymentTabBtn = document.getElementById('payment-tab-btn');
-    
-    if (profileTabBtn) {
-        profileTabBtn.addEventListener('click', () => switchAccountDashboardTab('profile'));
-    }
-    
-    if (ridesTabBtn) {
-        ridesTabBtn.addEventListener('click', () => switchAccountDashboardTab('rides'));
-    }
-    
-    if (placesTabBtn) {
-        placesTabBtn.addEventListener('click', () => switchAccountDashboardTab('places'));
-    }
-    
-    if (paymentTabBtn) {
-        paymentTabBtn.addEventListener('click', () => switchAccountDashboardTab('payment'));
-    }
-    
-    // FIXED: View Profile links with improved error handling
-    const viewProfileLinks = document.querySelectorAll('#view-profile-link, #mobile-view-profile-link');
-    viewProfileLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (safeOpenModal('account-dashboard-modal')) {
-                try {
-                    switchAccountDashboardTab('profile');
-                    fillProfileForm();
-                } catch (error) {
-                    console.error('Error switching to profile tab:', error);
-                }
-            }
-        });
-    });
-    
-    // FIXED: Ride History links with improved error handling
-    const rideHistoryLinks = document.querySelectorAll('#ride-history-link, #mobile-ride-history-link');
-    rideHistoryLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (safeOpenModal('account-dashboard-modal')) {
-                try {
-                    switchAccountDashboardTab('rides');
-                } catch (error) {
-                    console.error('Error switching to rides tab:', error);
-                }
-            }
-        });
-    });
-    
-    // FIXED: Saved Places links with improved error handling
-    const savedPlacesLinks = document.querySelectorAll('#saved-places-link, #mobile-saved-places-link');
-    savedPlacesLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (safeOpenModal('account-dashboard-modal')) {
-                try {
-                    switchAccountDashboardTab('places');
-                } catch (error) {
-                    console.error('Error switching to places tab:', error);
-                }
-            }
-        });
-    });
-    
-    // FIXED: Payment Methods links with improved error handling
-    const paymentMethodsLinks = document.querySelectorAll('#payment-methods-link, #mobile-payment-methods-link');
-    paymentMethodsLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (safeOpenModal('account-dashboard-modal')) {
-                try {
-                    switchAccountDashboardTab('payment');
-                } catch (error) {
-                    console.error('Error switching to payment tab:', error);
-                }
-            }
-        });
-    });
-    
-    // Profile form submission
-    const profileForm = document.getElementById('profile-form');
-    if (profileForm) {
-        profileForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('profile-name').value.trim();
-            const email = document.getElementById('profile-email').value.trim();
-            const phone = document.getElementById('profile-phone').value.trim();
-            
-            if (!name) {
-                showConfirmation('Please enter your name.', true);
-                return;
-            }
-            
-            if (!email || !isValidEmail(email)) {
-                showConfirmation('Please enter a valid email address.', true);
-                return;
-            }
-            
-            // Update user data
-            currentUser = {
-                ...currentUser,
-                name,
-                email,
-                phone
-            };
-            
-            // Update local storage
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            
-            // Update UI
-            updateUIForLoginState();
-            
-            // Show confirmation
-            showConfirmation('Profile updated successfully!');
-        });
-    }
-    
-    // Add Place form submission
-    const addPlaceForm = document.getElementById('add-place-form');
-    if (addPlaceForm) {
-        addPlaceForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('place-name').value.trim();
-            const address = document.getElementById('place-address').value.trim();
-            
-            if (!name) {
-                showConfirmation('Please enter a place name.', true);
-                return;
-            }
-            
-            if (!address) {
-                showConfirmation('Please enter an address.', true);
-                return;
-            }
-            
-            // In a real app, this would save to the user's account
-            showConfirmation(`Added "${name}" to your saved places.`);
-            addPlaceForm.reset();
-        });
-    }
-    
-    // Add Payment Method button
-    const addPaymentMethodBtn = document.getElementById('add-payment-method-btn');
-    if (addPaymentMethodBtn) {
-        addPaymentMethodBtn.addEventListener('click', () => {
-            // In a real app, this would open a payment method form
-            showConfirmation('Payment method functionality would be integrated with a payment processor.', true);
-        });
-    }
-    
-    // FIXED: Account dashboard modal overlay
-    const accountDashboardModalOverlay = document.getElementById('account-dashboard-modal-overlay');
-    if (accountDashboardModalOverlay) {
-        accountDashboardModalOverlay.addEventListener('click', (e) => {
-            if (e.target === accountDashboardModalOverlay) {
-                closeModal('account-dashboard-modal');
-            }
-        });
-    }
-    
-    // FIXED: Keyboard escape key to close modal
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const accountDashboard = document.getElementById('account-dashboard-modal');
-            if (accountDashboard && accountDashboard.style.display === 'flex') {
-                closeModal('account-dashboard-modal');
-            }
-        }
-    });
-}
-
 // --- Event Listeners Setup ---
 function setupEventListeners() {
     // Set current year in footer
@@ -1444,16 +1147,14 @@ function setupEventListeners() {
         });
     }
     
-    // FIXED: Handle rewards button - check if logged in
+    // UPDATED: Handle rewards button - check if logged in and redirect to dashboard
     if (joinRewardsBtn) {
         joinRewardsBtn.addEventListener('click', (e) => {
             e.preventDefault();
             if (isLoggedIn) {
-                // If already logged in, open the account dashboard to show rewards
-                safeOpenModal('account-dashboard-modal');
-                // Optionally, you could add a 'rewards' tab and switch to it
-                // For now, let's show them the ride history which would contain rewards
-                switchAccountDashboardTab('rides');
+                // If logged in, redirect to the rewards tab in the dashboard
+                localStorage.setItem('dashboardActiveTab', 'rewards');
+                window.location.href = 'account-dashboard.html';
             } else {
                 // If not logged in, show the login modal
                 openModal('account-modal');
@@ -1515,17 +1216,8 @@ function setupEventListeners() {
     modalCloseBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            const modal = btn.closest('#account-modal') 
-                ? 'account-modal' 
-                : btn.closest('#schedule-modal') 
-                    ? 'schedule-modal'
-                    : btn.closest('#account-dashboard-modal')
-                        ? 'account-dashboard-modal'
-                        : null;
-            
-            if (modal) {
-                closeModal(modal);
-            }
+            const modal = btn.closest('[id]').id;
+            closeModal(modal);
         });
     });
     
@@ -1643,9 +1335,59 @@ function setupEventListeners() {
         checkNetworkStatus();
     }, 500);
     
-    // Set up account-related event listeners
-    setupAccountEventListeners();
+    // Account Dropdown Toggle
+    const accountDropdownBtn = document.getElementById('account-dropdown-btn');
+    if (accountDropdownBtn) {
+        accountDropdownBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleAccountDropdown();
+        });
+    }
     
+    // Mobile Account Menu Toggle
+    const mobileAccountDropdownBtn = document.getElementById('mobile-account-dropdown-btn');
+    if (mobileAccountDropdownBtn) {
+        mobileAccountDropdownBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMobileAccountMenu();
+        });
+    }
+    
+    // Logout Buttons
+    const logoutLinks = document.querySelectorAll('#logout-link, #mobile-logout-link');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleLogout();
+        });
+    });
+    
+    // UPDATED: Save active tab for dashboard links
+    const rideHistoryLinks = document.querySelectorAll('#ride-history-link, #mobile-ride-history-link');
+    rideHistoryLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Store the tab to show when landing on the dashboard page
+            localStorage.setItem('dashboardActiveTab', 'rides');
+        });
+    });
+    
+    const savedPlacesLinks = document.querySelectorAll('#saved-places-link, #mobile-saved-places-link');
+    savedPlacesLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Store the tab to show when landing on the dashboard page
+            localStorage.setItem('dashboardActiveTab', 'places');
+        });
+    });
+    
+    const paymentMethodsLinks = document.querySelectorAll('#payment-methods-link, #mobile-payment-methods-link');
+    paymentMethodsLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Store the tab to show when landing on the dashboard page
+            localStorage.setItem('dashboardActiveTab', 'payment');
+        });
+    });
+
     // Check login status
     checkLoginStatus();
 }
