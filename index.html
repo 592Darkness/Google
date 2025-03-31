@@ -103,6 +103,49 @@
           <button id="login-signup-btn" class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
             Login / Sign Up
           </button>
+          
+          <!-- Account Dropdown (Hidden by default, shown after login) -->
+          <div class="account-dropdown hidden md:flex items-center space-x-2 relative">
+              <button id="account-dropdown-btn" class="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg">
+                  <span class="lucide" aria-hidden="true">&#xebe4;</span>
+                  <span class="user-display-name">User</span>
+                  <span class="lucide text-xs" aria-hidden="true">&#xeaa0;</span>
+              </button>
+              <div id="account-dropdown-menu" class="absolute right-0 top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50 hidden">
+                  <ul class="py-2">
+                      <li>
+                          <a href="#" id="view-profile-link" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-primary-400 transition duration-300">
+                              <span class="lucide mr-2" aria-hidden="true">&#xebe4;</span>
+                              View Profile
+                          </a>
+                      </li>
+                      <li>
+                          <a href="#" id="ride-history-link" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-primary-400 transition duration-300">
+                              <span class="lucide mr-2" aria-hidden="true">&#xea69;</span>
+                              Ride History
+                          </a>
+                      </li>
+                      <li>
+                          <a href="#" id="saved-places-link" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-primary-400 transition duration-300">
+                              <span class="lucide mr-2" aria-hidden="true">&#xea47;</span>
+                              Saved Places
+                          </a>
+                      </li>
+                      <li>
+                          <a href="#" id="payment-methods-link" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-primary-400 transition duration-300">
+                              <span class="lucide mr-2" aria-hidden="true">&#xeab2;</span>
+                              Payment Methods
+                          </a>
+                      </li>
+                      <li class="border-t border-gray-700 mt-2 pt-2">
+                          <a href="#" id="logout-link" class="block px-4 py-2 text-red-400 hover:bg-gray-700 hover:text-red-300 transition duration-300">
+                              <span class="lucide mr-2" aria-hidden="true">&#xea7b;</span>
+                              Log Out
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
         </div>
         
         <!-- Mobile Menu Button -->
@@ -122,6 +165,39 @@
           <button id="login-signup-btn-mobile" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-105 mt-2">
             Login / Sign Up
           </button>
+          
+          <!-- Mobile Account Dropdown (Hidden by default, shown after login) -->
+          <div id="mobile-account-dropdown" class="account-dropdown hidden">
+              <button id="mobile-account-dropdown-btn" class="flex items-center justify-between w-full text-gray-300 hover:text-primary-400 transition duration-300 py-2">
+                  <div class="flex items-center">
+                      <span class="lucide mr-2" aria-hidden="true">&#xebe4;</span>
+                      <span class="user-display-name">User</span>
+                  </div>
+                  <span class="lucide" aria-hidden="true">&#xeaa0;</span>
+              </button>
+              <div id="mobile-account-menu" class="hidden pl-4 mt-2 space-y-3">
+                  <a href="#" id="mobile-view-profile-link" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">
+                      <span class="lucide mr-2" aria-hidden="true">&#xebe4;</span>
+                      View Profile
+                  </a>
+                  <a href="#" id="mobile-ride-history-link" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">
+                      <span class="lucide mr-2" aria-hidden="true">&#xea69;</span>
+                      Ride History
+                  </a>
+                  <a href="#" id="mobile-saved-places-link" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">
+                      <span class="lucide mr-2" aria-hidden="true">&#xea47;</span>
+                      Saved Places
+                  </a>
+                  <a href="#" id="mobile-payment-methods-link" class="block text-gray-300 hover:text-primary-400 transition duration-300 py-2">
+                      <span class="lucide mr-2" aria-hidden="true">&#xeab2;</span>
+                      Payment Methods
+                  </a>
+                  <a href="#" id="mobile-logout-link" class="block text-red-400 hover:text-red-300 transition duration-300 py-2">
+                      <span class="lucide mr-2" aria-hidden="true">&#xea7b;</span>
+                      Log Out
+                  </a>
+              </div>
+          </div>
         </div>
       </div>
     </header>
@@ -514,6 +590,223 @@
                 <!-- Schedule Ride Button -->
                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Schedule Ride</button>
             </form>
+        </div>
+    </div>
+    
+    <!-- Account Dashboard Modal -->
+    <div id="account-dashboard-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="account-dashboard-modal-overlay"></div>
+        <div class="modal-content bg-gray-800 shadow-2xl border border-gray-700 max-w-lg w-full mx-auto relative z-10">
+            <button type="button" class="modal-close-btn text-gray-500 hover:text-primary-400 absolute right-4 top-4 focus:outline-none focus:text-primary-500" aria-label="Close modal">
+                <span class="lucide" aria-hidden="true">&#xea76;</span>
+            </button>
+            <h2 class="text-2xl font-semibold text-white mb-2 text-center">Account Dashboard</h2>
+            <p class="text-center text-gray-400 mb-6">Welcome, <span class="user-display-name font-medium text-white">User</span></p>
+            
+            <!-- Account Dashboard Tabs -->
+            <div class="flex border-b border-gray-600 mb-6">
+                <button type="button" id="profile-tab-btn" class="flex-1 py-2 text-center font-medium text-primary-400 border-b-2 border-primary-400 transition-colors" aria-selected="true" role="tab">Profile</button>
+                <button type="button" id="rides-tab-btn" class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300 transition-colors" aria-selected="false" role="tab">Ride History</button>
+                <button type="button" id="places-tab-btn" class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300 transition-colors" aria-selected="false" role="tab">Saved Places</button>
+                <button type="button" id="payment-tab-btn" class="flex-1 py-2 text-center font-medium text-gray-400 hover:text-primary-300 transition-colors" aria-selected="false" role="tab">Payment</button>
+            </div>
+            
+            <!-- Profile Tab Content -->
+            <div id="profile-tab-content" class="py-3" role="tabpanel" aria-labelledby="profile-tab-btn">
+                <form id="profile-form" class="space-y-4">
+                    <div>
+                        <label for="profile-name" class="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                        <input type="text" id="profile-name" name="name" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="profile-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                        <input type="email" id="profile-email" name="email" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="profile-phone" class="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
+                        <input type="tel" id="profile-phone" name="phone" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    </div>
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 shadow-md transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Ride History Tab Content -->
+            <div id="rides-tab-content" class="py-3 hidden" role="tabpanel" aria-labelledby="rides-tab-btn">
+                <div class="space-y-4">
+                    <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-medium text-white">Georgetown to Linden</h4>
+                                <p class="text-gray-400 text-sm">March 29, 2025 · 10:32 AM</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-medium text-white">G$5,200</p>
+                                <div class="flex items-center text-yellow-400 text-sm mt-1">
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-2 text-sm">
+                            <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4b;</span>
+                            <div class="flex-1">
+                                <p>Main Street, Georgetown</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-2 text-sm">
+                            <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4a;</span>
+                            <div class="flex-1">
+                                <p>Central Linden</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-3">
+                            <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Get Receipt</button>
+                            <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Book Again</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-medium text-white">Berbice to Georgetown</h4>
+                                <p class="text-gray-400 text-sm">March 27, 2025 · 2:15 PM</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-medium text-white">G$8,400</p>
+                                <div class="flex items-center text-yellow-400 text-sm mt-1">
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    <span class="lucide text-xs" aria-hidden="true">&#xeae5;</span>
+                                    <span class="lucide text-xs text-gray-500" aria-hidden="true">&#xeae5;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-2 text-sm">
+                            <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4b;</span>
+                            <div class="flex-1">
+                                <p>New Amsterdam, Berbice</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-2 text-sm">
+                            <span class="lucide text-primary-400 mt-1" aria-hidden="true">&#xea4a;</span>
+                            <div class="flex-1">
+                                <p>Queenstown, Georgetown</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-3">
+                            <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Get Receipt</button>
+                            <button class="text-sm text-primary-400 hover:text-primary-300 transition-colors">Book Again</button>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center py-3">
+                        <button class="text-primary-400 hover:text-primary-300 transition-colors">View All Rides</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Saved Places Tab Content -->
+            <div id="places-tab-content" class="py-3 hidden" role="tabpanel" aria-labelledby="places-tab-btn">
+                <div class="space-y-4">
+                    <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-medium text-white">Home</h4>
+                            <button class="text-gray-400 hover:text-primary-400 transition-colors">
+                                <span class="lucide" aria-hidden="true">&#xea05;</span>
+                            </button>
+                        </div>
+                        <p class="text-gray-300">123 Main Street, Georgetown</p>
+                    </div>
+                    
+                    <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-medium text-white">Work</h4>
+                            <button class="text-gray-400 hover:text-primary-400 transition-colors">
+                                <span class="lucide" aria-hidden="true">&#xea05;</span>
+                            </button>
+                        </div>
+                        <p class="text-gray-300">Pegasus Hotel, Georgetown</p>
+                    </div>
+                    
+                    <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-medium text-white">Family</h4>
+                            <button class="text-gray-400 hover:text-primary-400 transition-colors">
+                                <span class="lucide" aria-hidden="true">&#xea05;</span>
+                            </button>
+                        </div>
+                        <p class="text-gray-300">45 Quamina Street, Georgetown</p>
+                    </div>
+                    
+                    <form id="add-place-form" class="mt-6">
+                        <div class="mb-4">
+                            <label for="place-name" class="block text-sm font-medium text-gray-300 mb-1">Place Name</label>
+                            <input type="text" id="place-name" name="name" placeholder="e.g. Home, Work, Gym" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        </div>
+                        <div class="mb-4">
+                            <label for="place-address" class="block text-sm font-medium text-gray-300 mb-1">Address</label>
+                            <input type="text" id="place-address" name="address" placeholder="Enter location" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        </div>
+                        <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800">Add Place</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Payment Methods Tab Content -->
+            <div id="payment-tab-content" class="py-3 hidden" role="tabpanel" aria-labelledby="payment-tab-btn">
+                <div class="space-y-4">
+                    <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <span class="lucide text-xl mr-3" aria-hidden="true">&#xeaa9;</span>
+                                <h4 class="font-medium text-white">Visa •••• 4242</h4>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-primary-400 hover:text-primary-300 transition-colors" title="Edit">
+                                    <span class="lucide" aria-hidden="true">&#xea05;</span>
+                                </button>
+                                <button class="text-gray-400 hover:text-red-400 transition-colors" title="Remove">
+                                    <span class="lucide" aria-hidden="true">&#xea76;</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm">Expires 05/2026</p>
+                        <div class="mt-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                                Default
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <span class="lucide text-xl mr-3" aria-hidden="true">&#xeaa8;</span>
+                                <h4 class="font-medium text-white">Cash</h4>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-primary-400 hover:text-primary-300 transition-colors" title="Make Default">
+                                    <span class="lucide" aria-hidden="true">&#xe96c;</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm">Pay directly to driver</p>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button id="add-payment-method-btn" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 border border-gray-600 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-1 focus:ring-offset-gray-800 flex items-center justify-center">
+                            <span class="lucide mr-2" aria-hidden="true">&#xea82;</span>
+                            Add Payment Method
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
