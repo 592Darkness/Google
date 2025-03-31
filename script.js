@@ -467,28 +467,30 @@ function toggleOfflineAlert(isOffline) {
     }
 }
 
-// FIXED: Improved modal functions to fix the rewards button issue
+// FIXED Modal Functions - Properly implemented to ensure popups work correctly
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         // Set display to flex properly
         modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; 
+        document.body.style.overflow = 'hidden'; // Prevent scrolling behind modal
         
         // Add animation classes for smooth entry
-        setTimeout(() => {
-            const modalContent = modal.querySelector('.modal-content');
-            if (modalContent) {
-                modalContent.classList.add('animate-slide-up');
-                modalContent.classList.remove('animate-slide-down'); // Remove slide down if it exists
-            }
-        }, 10);
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+            // Remove any existing animation classes first
+            modalContent.classList.remove('animate-slide-down');
+            // Add the slide up animation
+            modalContent.classList.add('animate-slide-up');
+        }
         
         // Set focus on first focusable element for accessibility
-        const firstInput = modal.querySelector('input, button:not(.modal-close-btn)');
-        if (firstInput) {
-            firstInput.focus();
-        }
+        setTimeout(() => {
+            const firstInput = modal.querySelector('input, button:not(.modal-close-btn)');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 100);
     }
 }
 
@@ -504,10 +506,13 @@ function closeModal(modalId) {
             // After animation completes, hide the modal
             setTimeout(() => {
                 modal.style.display = 'none';
-                document.body.style.overflow = ''; 
-                modalContent.classList.remove('animate-slide-down');
+                document.body.style.overflow = ''; // Restore scrolling
+                if (modalContent) {
+                    modalContent.classList.remove('animate-slide-down');
+                }
             }, 300);
         } else {
+            // If no modal content found, just hide it immediately
             modal.style.display = 'none';
             document.body.style.overflow = ''; 
         }
@@ -899,7 +904,11 @@ function initScheduleForm() {
 
 // --- Event Listeners Setup ---
 function setupEventListeners() {
-    document.getElementById('current-year').textContent = new Date().getFullYear();
+    // Set current year in footer
+    const currentYearElement = document.getElementById('current-year');
+    if (currentYearElement) {
+        currentYearElement.textContent = new Date().getFullYear();
+    }
 
     // Booking form submission
     const bookingForm = document.getElementById('booking-form');
@@ -971,8 +980,11 @@ function setupEventListeners() {
     const scheduleRideNav = document.getElementById('schedule-ride-nav');
     const scheduleRideNavMobile = document.getElementById('schedule-ride-nav-mobile');
     
+    // FIXED: Handle login/signup buttons
     if (loginSignupBtn) {
-        loginSignupBtn.addEventListener('click', () => openModal('account-modal'));
+        loginSignupBtn.addEventListener('click', () => {
+            openModal('account-modal');
+        });
     }
     
     if (loginSignupBtnMobile) {
@@ -982,10 +994,14 @@ function setupEventListeners() {
         });
     }
     
+    // FIXED: Handle rewards button that was breaking the site
     if (joinRewardsBtn) {
-        joinRewardsBtn.addEventListener('click', () => openModal('account-modal'));
+        joinRewardsBtn.addEventListener('click', () => {
+            openModal('account-modal');
+        });
     }
     
+    // Schedule ride buttons & links
     if (scheduleRideLink) {
         scheduleRideLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -1014,7 +1030,7 @@ function setupEventListeners() {
         mobileMenuBtn.addEventListener('click', toggleMobileMenu);
     }
     
-    // Modal overlay click to close
+    // FIXED: Proper handling of modal close via overlay
     const accountModalOverlay = document.getElementById('account-modal-overlay');
     const scheduleModalOverlay = document.getElementById('schedule-modal-overlay');
     
@@ -1034,7 +1050,7 @@ function setupEventListeners() {
         });
     }
     
-    // FIXED: Add click event listeners to modal close buttons
+    // FIXED: Modal close buttons 
     const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
     modalCloseBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -1075,7 +1091,7 @@ function setupEventListeners() {
     
     // Vehicle type selection for fare estimate
     const vehicleTypeRadios = document.querySelectorAll('input[name="vehicleType"]');
-    if (vehicleTypeRadios) {
+    if (vehicleTypeRadios.length > 0) {
         vehicleTypeRadios.forEach(radio => {
             radio.addEventListener('change', updateFareEstimate);
         });
@@ -1083,7 +1099,7 @@ function setupEventListeners() {
     
     // Vehicle type selection for schedule fare estimate
     const scheduleVehicleTypeRadios = document.querySelectorAll('input[name="scheduleVehicleType"]');
-    if (scheduleVehicleTypeRadios) {
+    if (scheduleVehicleTypeRadios.length > 0) {
         scheduleVehicleTypeRadios.forEach(radio => {
             radio.addEventListener('change', updateScheduleFareEstimate);
         });
@@ -1131,19 +1147,28 @@ function setupEventListeners() {
     
     // Scroll animations for feature cards
     const observeElements = () => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fade-in');
-                }
+        // Check if IntersectionObserver is available (modern browsers)
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach(card => {
+                card.classList.remove('animate-fade-in');
+                observer.observe(card);
             });
-        }, { threshold: 0.1 });
-        
-        const featureCards = document.querySelectorAll('.feature-card');
-        featureCards.forEach(card => {
-            card.classList.remove('animate-fade-in');
-            observer.observe(card);
-        });
+        } else {
+            // Fallback for browsers without IntersectionObserver
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach(card => {
+                card.classList.add('animate-fade-in');
+            });
+        }
     };
     
     // Network status listeners
@@ -1159,6 +1184,8 @@ function setupEventListeners() {
 
 // --- Document Ready Event Listener ---
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM fully loaded and parsed");
+    
     // Initialize schedule form with defaults
     initScheduleForm();
     
@@ -1169,10 +1196,9 @@ document.addEventListener('DOMContentLoaded', () => {
     checkNetworkStatus();
 });
 
-// Make initMap globally accessible for Google Maps callback
+// Make functions globally accessible
 window.initMap = initMap;
-
-// Make modal functions globally accessible
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.switchTab = switchTab;
+window.toggleMobileMenu = toggleMobileMenu;
